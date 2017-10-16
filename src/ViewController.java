@@ -59,7 +59,7 @@ public class ViewController extends JPanel implements MouseListener {
             }
         }
 
-        //printBoard();
+        printBoard();
     }
 
     /**
@@ -245,12 +245,85 @@ public class ViewController extends JPanel implements MouseListener {
         }
     }
 
-    private void findPossibleMovesForBishop(Bishop bishop) {
+    private void fillPossibleMovesForBishop(Bishop bishop) {
+        possible_moves.clear();
 
+        final int x = bishop.getX_position();
+        final int y = bishop.getY_position();
+
+        System.out.println("Bishop at " + x  + " " + y);
+
+        // All left up
+        for (int i = 1; x - i >= 0 && y - i >= 0; i++) {
+            System.out.println("Evaluating: " + (x-i) + " " + (y-i));
+            if (board[x-i][y-i] == null) {
+                possible_moves.add(new Point(x-i, y-i));
+            }
+            else {
+                if (board[x-i][y-i].isWhite() != bishop.isWhite()) {
+                    possible_moves.add(new Point(x - i, y - i));
+                    break;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+
+        // All left down
+        for (int i = 1; x - i >= 0 && y + i < 8; i++) {
+            System.out.println("Left down " + (x-i) + " " + (y+i));
+            if (board[x - i][y + i] == null) {
+                possible_moves.add(new Point(x - i, y + i));
+            }
+            else {
+                if (board[x - i][y + i].isWhite() != bishop.isWhite()) {
+                    possible_moves.add(new Point(x - i, y + i));
+                    break;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+
+        // All right down
+        for (int i = 1; x + i < 8 && y + i < 8; i++) {
+            System.out.println("UP Right: " + (x+i) + " " + (y-i));
+            if (board[x + i][y + i] == null) {
+                possible_moves.add(new Point(x + i, y + i));
+            }
+            else {
+                if (board[x + i][y + i].isWhite() != bishop.isWhite()) {
+                    possible_moves.add(new Point(x + i, y + i));
+                    break;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+
+        // All right up
+        for (int i = 1; x + i < 8 && y - i >= 0; i++) {
+            System.out.println("UP Right: " + (x+i) + " " + (y-i));
+            if (board[x + i][y - i] == null) {
+                possible_moves.add(new Point(x + i, y - i));
+            }
+            else {
+                if (board[x + i][y - i].isWhite() != bishop.isWhite()) {
+                    possible_moves.add(new Point(x + i, y - i));
+                    break;
+                }
+                else {
+                    break;
+                }
+            }
+        }
     }
 
     /**
-     * Method to branch which piece is selected based on downcasted type.
+     * Method to branch which piece is selected based on down-casted type.
      */
     private void fillPossibleMoves(Piece piece) {
         if (piece.getClass() == Pawn.class) {
@@ -263,7 +336,7 @@ public class ViewController extends JPanel implements MouseListener {
             fillPossibleMovesForKnight(((Knight) piece));
         }
         else if (piece.getClass() == Bishop.class) {
-            System.out.printf("B");
+            fillPossibleMovesForBishop((Bishop) piece);
         }
         else if (piece.getClass() == Queen.class) {
             System.out.printf("Q");
@@ -288,10 +361,10 @@ public class ViewController extends JPanel implements MouseListener {
         System.out.println("Click: " + x_tile + " " + y_tile);
 
         if (currently_viewing == null) {
-            System.out.println("Initiate");
+//            System.out.println("Initiate");
             currently_viewing = board[x_tile][y_tile];
             if (currently_viewing != null) {
-                System.out.println("Find Moves");
+//                System.out.println("Find Moves");
                 fillPossibleMoves(currently_viewing);
                 System.out.printf("Moves: %s\n", possible_moves);
                 return;
@@ -299,7 +372,7 @@ public class ViewController extends JPanel implements MouseListener {
         }
 
         if (currently_viewing != null) {
-            System.out.println("Move To");
+//            System.out.println("Move To");
             for (Point possible_move : possible_moves) {
                 if (possible_move.x == x_tile && possible_move.y == y_tile) {
                     int prev_x = currently_viewing.getX_position();
@@ -320,7 +393,7 @@ public class ViewController extends JPanel implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        
+
     }
 
     @Override
