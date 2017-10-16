@@ -33,19 +33,7 @@ public abstract class Piece {
         this.y_position = y_position;
     }
 
-    public int getCapture_weight() {
-        return capture_weight;
-    }
-
-    public void setCapture_weight(int capture_weight) {
-        this.capture_weight = capture_weight;
-    }
-
     public boolean isWhite() {
         return color;
-    }
-
-    public void setColor(boolean color) {
-        this.color = color;
     }
 }

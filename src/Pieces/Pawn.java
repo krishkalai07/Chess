@@ -7,22 +7,11 @@ import java.io.File;
 import java.io.IOException;
 
 public class Pawn extends Piece {
-
-    private boolean has_moved; //for first move, where a pawn can move 1 or 2 spaces
     private boolean in_5th_row; //for en-passant
 
     public Pawn(int x_location, int y_location, boolean is_white) {
         super(x_location, y_location, 1, is_white);
-        has_moved = false;
         in_5th_row = false;
-    }
-
-    public boolean hasMoved() {
-        return has_moved;
-    }
-
-    public void setHas_moved(boolean has_moved) {
-        this.has_moved = has_moved;
     }
 
     public boolean isIn_5th_row() {

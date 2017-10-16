@@ -148,10 +148,9 @@ public class ViewController extends JPanel implements MouseListener {
 
             // First move can move 2 spaces forwards
             if (possible_moves.size() > 0) {
-                if (!pawn.hasMoved()) {
+                if (pawn.getY_position() == 6) {
                     if (board[pawn.getX_position()][pawn.getY_position() - 2] == null) {
                         possible_moves.add(new Point(pawn.getX_position(), pawn.getY_position() - 2));
-                        pawn.setHas_moved(true);
                     }
                 }
             }
@@ -172,11 +171,10 @@ public class ViewController extends JPanel implements MouseListener {
 
             // First move can move 2 spaces forward.
             if (possible_moves.size() > 0) {
-                if (!pawn.hasMoved()) {
+                if (pawn.getY_position() == 2) {
                     if (board[pawn.getX_position()][pawn.getY_position() + 2] == null) {
                         possible_moves.add(new Point(pawn.getX_position(), pawn.getY_position() + 2));
                     }
-                    pawn.setHas_moved(true);
                 }
             }
 
@@ -232,7 +230,7 @@ public class ViewController extends JPanel implements MouseListener {
             }
         }
 
-        //Up
+        // Up
         if (x - 1 >= 0 && y - 2 >= 0) {
             if (board[x - 1][y - 2] == null || board[x - 1][y - 2].isWhite() != knight.isWhite()) {
                 possible_moves.add(new Point(x - 1, y - 2));
