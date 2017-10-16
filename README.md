@@ -12,13 +12,15 @@ Pawn movement - In Progress
     
 Knight movement - Done
 
-Bishop movement - In progress
+Bishop movement - Done
 
-Rook movement - Not started
+Rook movement - Done
 
 Queen movement - Not started
 
 King movement - Not started
+
+Player turns - Not started
 
 King in check - Not started
 

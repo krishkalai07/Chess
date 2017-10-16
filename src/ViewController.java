@@ -322,6 +322,77 @@ public class ViewController extends JPanel implements MouseListener {
         }
     }
 
+    private void fillPossibleMovesForRook(Rook rook) {
+        possible_moves.clear();
+
+        int x = rook.getX_position();
+        int y = rook.getY_position();
+
+        //Up
+        for (int i = 1; y - i >= 0; i++) {
+            if (board[x][y-i] == null) {
+                possible_moves.add(new Point(x, y - i));
+            }
+            else {
+                if (board[x][y - i].isWhite() != rook.isWhite()) {
+                    possible_moves.add(new Point(x, y - i));
+                    break;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+
+        // Right
+        for (int i = 1; x + i < 8; i++) {
+            if (board[x+i][y] == null) {
+                possible_moves.add(new Point(x+i, y));
+            }
+            else {
+                if (board[x+i][y].isWhite() != rook.isWhite()) {
+                    possible_moves.add(new Point(x+i, y));
+                    break;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+
+        //Down
+        for (int i = 1; y + i < 8; i++) {
+            if (board[x][y+i] == null) {
+                possible_moves.add(new Point(x, y + i));
+            }
+            else {
+                if (board[x][y + i].isWhite() != rook.isWhite()) {
+                    possible_moves.add(new Point(x, y + i));
+                    break;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+
+        //Left
+        for (int i = 1; x - i >= 0; i++) {
+            if (board[x-i][y] == null) {
+                possible_moves.add(new Point(x - i, y));
+            }
+            else {
+                if (board[x - i][y].isWhite() != rook.isWhite()) {
+                    possible_moves.add(new Point(x - i, y));
+                    break;
+                }
+                else {
+                    break;
+                }
+            }
+        }
+    }
+
     /**
      * Method to branch which piece is selected based on down-casted type.
      */
@@ -330,7 +401,7 @@ public class ViewController extends JPanel implements MouseListener {
             fillPossibleMovesForPawn((Pawn)(piece));
         }
         else if (piece.getClass() == Rook.class) {
-            System.out.printf("R");
+            fillPossibleMovesForRook((Rook) piece);
         }
         else if (piece.getClass() == Knight.class) {
             fillPossibleMovesForKnight(((Knight) piece));
