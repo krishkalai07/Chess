@@ -12,7 +12,7 @@ public class ViewController extends JPanel implements MouseListener {
 
     private Piece board[][];
     private Piece currently_viewing;
-    private Vector<Point> possible_moves;
+    private Vector<BoardPoint> possible_moves;
 
     ViewController() {
         setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -143,47 +143,47 @@ public class ViewController extends JPanel implements MouseListener {
         if (pawn.isWhite()) {
             // All moves allow moving one space forwards
             if (board[pawn.getX_position()][pawn.getY_position() - 1] == null) {
-                possible_moves.add(new Point(pawn.getX_position(), pawn.getY_position() - 1));
+                possible_moves.add(new BoardPoint(pawn.getX_position(), pawn.getY_position() - 1));
             }
 
             // First move can move 2 spaces forwards
             if (possible_moves.size() > 0) {
                 if (pawn.getY_position() == 6) {
                     if (board[pawn.getX_position()][pawn.getY_position() - 2] == null) {
-                        possible_moves.add(new Point(pawn.getX_position(), pawn.getY_position() - 2));
+                        possible_moves.add(new BoardPoint(pawn.getX_position(), pawn.getY_position() - 2));
                     }
                 }
             }
 
             //If there is a piece one space forward diagonally from the pawn, the pawn can move (and capture).
             if (pawn.getX_position() != 0 && board[pawn.getX_position() - 1][pawn.getY_position() - 1] != null) {
-                possible_moves.add(new Point(pawn.getX_position() - 1, pawn.getY_position() - 1));
+                possible_moves.add(new BoardPoint(pawn.getX_position() - 1, pawn.getY_position() - 1));
             }
             if (pawn.getX_position() != 7 && board[pawn.getX_position() + 1][pawn.getY_position() - 1] != null) {
-                possible_moves.add(new Point(pawn.getX_position() + 1, pawn.getY_position() - 1));
+                possible_moves.add(new BoardPoint(pawn.getX_position() + 1, pawn.getY_position() - 1));
             }
         }
         else {
             // All moves can allow moving 1 space forward.
             if (board[pawn.getX_position()][pawn.getY_position() + 1] == null) {
-                possible_moves.add(new Point(pawn.getX_position(), pawn.getY_position() + 1));
+                possible_moves.add(new BoardPoint(pawn.getX_position(), pawn.getY_position() + 1));
             }
 
             // First move can move 2 spaces forward.
             if (possible_moves.size() > 0) {
                 if (pawn.getY_position() == 2) {
                     if (board[pawn.getX_position()][pawn.getY_position() + 2] == null) {
-                        possible_moves.add(new Point(pawn.getX_position(), pawn.getY_position() + 2));
+                        possible_moves.add(new BoardPoint(pawn.getX_position(), pawn.getY_position() + 2));
                     }
                 }
             }
 
             // If there is a piece one space forward diagonally from the pawn, the pawn can move (and capture).
             if (pawn.getX_position() != 0 && board[pawn.getX_position() - 1][pawn.getY_position() + 1] != null) {
-                possible_moves.add(new Point(pawn.getX_position() - 1, pawn.getY_position() + 1));
+                possible_moves.add(new BoardPoint(pawn.getX_position() - 1, pawn.getY_position() + 1));
             }
             if (pawn.getX_position() != 7 && board[pawn.getX_position() + 1][pawn.getY_position() + 1] != null) {
-                possible_moves.add(new Point(pawn.getX_position() + 1, pawn.getY_position() + 1));
+                possible_moves.add(new BoardPoint(pawn.getX_position() + 1, pawn.getY_position() + 1));
             }
         }
     }
@@ -197,57 +197,71 @@ public class ViewController extends JPanel implements MouseListener {
         // Right
         if (x + 2 < 8 && y + 1 < 8) {
             if (board[x+2][y+1] == null || board[x+2][y+1].isWhite() != knight.isWhite()) {
-                possible_moves.add(new Point(x + 2, y + 1));
+                possible_moves.add(new BoardPoint(x + 2, y + 1));
             }
         }
         if (x + 2 < 8 && y - 1 >= 0) {
             if (board[x+2][y-1] == null || board[x+2][y-1].isWhite() != knight.isWhite()) {
-                possible_moves.add(new Point(x + 2, y - 1));
+                possible_moves.add(new BoardPoint(x + 2, y - 1));
             }
         }
 
         // Down
         if (x - 1 >= 0 && y + 2 < 8) {
             if (board[x-1][y+2] == null || board[x-1][y+2].isWhite() != knight.isWhite()) {
-                possible_moves.add(new Point(x - 1, y + 2));
+                possible_moves.add(new BoardPoint(x - 1, y + 2));
             }
         }
         if (x + 1 < 8 && y + 2 < 8) {
             if (board[x+1][y+2] == null || board[x+1][y+2].isWhite() != knight.isWhite()) {
-                possible_moves.add(new Point(x + 1, y + 2));
+                possible_moves.add(new BoardPoint(x + 1, y + 2));
             }
         }
 
         // Left
         if (x - 2 >= 0 && y - 1 >= 0) {
             if (board[x-2][y-1] == null || board[x-2][y-1].isWhite() != knight.isWhite()) {
-                possible_moves.add(new Point(x - 2, y - 1));
+                possible_moves.add(new BoardPoint(x - 2, y - 1));
             }
         }
         if (x - 2 >= 0 && y + 1 < 8) {
             if (board[x-2][y+1] == null || board[x-2][y+1].isWhite() != knight.isWhite()) {
-                possible_moves.add(new Point(x - 2, y + 1));
+                possible_moves.add(new BoardPoint(x - 2, y + 1));
             }
         }
 
         // Up
         if (x - 1 >= 0 && y - 2 >= 0) {
             if (board[x - 1][y - 2] == null || board[x - 1][y - 2].isWhite() != knight.isWhite()) {
-                possible_moves.add(new Point(x - 1, y - 2));
+                possible_moves.add(new BoardPoint(x - 1, y - 2));
             }
         }
         if (x + 1 < 8 && y - 2 >= 0) {
             if (board[x + 1][y - 2] == null || board[x + 1][y - 2].isWhite() != knight.isWhite()) {
-                possible_moves.add(new Point(x + 1, y - 2));
+                possible_moves.add(new BoardPoint(x + 1, y - 2));
             }
         }
     }
 
     private void fillPossibleMovesForBishop(Bishop bishop) {
         possible_moves.clear();
+        fillAllMovesDiagonally(bishop);
+    }
 
-        final int x = bishop.getX_position();
-        final int y = bishop.getY_position();
+    private void fillPossibleMovesForRook(Rook rook) {
+        possible_moves.clear();
+        fillAllMovesStraight(rook);
+    }
+
+    private void fillPossibleMovesForQueen (Queen queen) {
+        possible_moves.clear();
+        fillAllMovesDiagonally(queen);
+        fillAllMovesStraight(queen);
+    }
+
+    private void fillAllMovesDiagonally(Piece piece) {
+        final int x = piece.getX_position();
+        final int y = piece.getY_position();
 
         System.out.println("Bishop at " + x  + " " + y);
 
@@ -255,16 +269,13 @@ public class ViewController extends JPanel implements MouseListener {
         for (int i = 1; x - i >= 0 && y - i >= 0; i++) {
             System.out.println("Evaluating: " + (x-i) + " " + (y-i));
             if (board[x-i][y-i] == null) {
-                possible_moves.add(new Point(x-i, y-i));
+                possible_moves.add(new BoardPoint(x-i, y-i));
             }
             else {
-                if (board[x-i][y-i].isWhite() != bishop.isWhite()) {
-                    possible_moves.add(new Point(x - i, y - i));
-                    break;
+                if (board[x-i][y-i].isWhite() != piece.isWhite()) {
+                    possible_moves.add(new BoardPoint(x - i, y - i));
                 }
-                else {
-                    break;
-                }
+                break;
             }
         }
 
@@ -272,16 +283,13 @@ public class ViewController extends JPanel implements MouseListener {
         for (int i = 1; x - i >= 0 && y + i < 8; i++) {
             System.out.println("Left down " + (x-i) + " " + (y+i));
             if (board[x - i][y + i] == null) {
-                possible_moves.add(new Point(x - i, y + i));
+                possible_moves.add(new BoardPoint(x - i, y + i));
             }
             else {
-                if (board[x - i][y + i].isWhite() != bishop.isWhite()) {
-                    possible_moves.add(new Point(x - i, y + i));
-                    break;
+                if (board[x - i][y + i].isWhite() != piece.isWhite()) {
+                    possible_moves.add(new BoardPoint(x - i, y + i));
                 }
-                else {
-                    break;
-                }
+                break;
             }
         }
 
@@ -289,16 +297,13 @@ public class ViewController extends JPanel implements MouseListener {
         for (int i = 1; x + i < 8 && y + i < 8; i++) {
             System.out.println("UP Right: " + (x+i) + " " + (y-i));
             if (board[x + i][y + i] == null) {
-                possible_moves.add(new Point(x + i, y + i));
+                possible_moves.add(new BoardPoint(x + i, y + i));
             }
             else {
-                if (board[x + i][y + i].isWhite() != bishop.isWhite()) {
-                    possible_moves.add(new Point(x + i, y + i));
-                    break;
+                if (board[x + i][y + i].isWhite() != piece.isWhite()) {
+                    possible_moves.add(new BoardPoint(x + i, y + i));
                 }
-                else {
-                    break;
-                }
+                break;
             }
         }
 
@@ -306,86 +311,98 @@ public class ViewController extends JPanel implements MouseListener {
         for (int i = 1; x + i < 8 && y - i >= 0; i++) {
             System.out.println("UP Right: " + (x+i) + " " + (y-i));
             if (board[x + i][y - i] == null) {
-                possible_moves.add(new Point(x + i, y - i));
+                possible_moves.add(new BoardPoint(x + i, y - i));
             }
             else {
-                if (board[x + i][y - i].isWhite() != bishop.isWhite()) {
-                    possible_moves.add(new Point(x + i, y - i));
-                    break;
+                if (board[x + i][y - i].isWhite() != piece.isWhite()) {
+                    possible_moves.add(new BoardPoint(x + i, y - i));
                 }
-                else {
-                    break;
-                }
+                break;
             }
         }
     }
 
-    private void fillPossibleMovesForRook(Rook rook) {
-        possible_moves.clear();
-
-        int x = rook.getX_position();
-        int y = rook.getY_position();
+    private void fillAllMovesStraight (Piece piece) {
+        int x = piece.getX_position();
+        int y = piece.getY_position();
 
         //Up
         for (int i = 1; y - i >= 0; i++) {
             if (board[x][y-i] == null) {
-                possible_moves.add(new Point(x, y - i));
+                possible_moves.add(new BoardPoint(x, y - i));
             }
             else {
-                if (board[x][y - i].isWhite() != rook.isWhite()) {
-                    possible_moves.add(new Point(x, y - i));
-                    break;
+                if (board[x][y - i].isWhite() != piece.isWhite()) {
+                    possible_moves.add(new BoardPoint(x, y - i));
                 }
-                else {
-                    break;
-                }
+                break;
             }
         }
 
         // Right
         for (int i = 1; x + i < 8; i++) {
             if (board[x+i][y] == null) {
-                possible_moves.add(new Point(x+i, y));
+                possible_moves.add(new BoardPoint(x+i, y));
             }
             else {
-                if (board[x+i][y].isWhite() != rook.isWhite()) {
-                    possible_moves.add(new Point(x+i, y));
-                    break;
+                if (board[x+i][y].isWhite() != piece.isWhite()) {
+                    possible_moves.add(new BoardPoint(x + i, y));
                 }
-                else {
-                    break;
-                }
+                break;
             }
         }
 
         //Down
         for (int i = 1; y + i < 8; i++) {
             if (board[x][y+i] == null) {
-                possible_moves.add(new Point(x, y + i));
+                possible_moves.add(new BoardPoint(x, y + i));
             }
             else {
-                if (board[x][y + i].isWhite() != rook.isWhite()) {
-                    possible_moves.add(new Point(x, y + i));
-                    break;
+                if (board[x][y + i].isWhite() != piece.isWhite()) {
+                    possible_moves.add(new BoardPoint(x, y + i));
                 }
-                else {
-                    break;
-                }
+                break;
             }
         }
 
         //Left
         for (int i = 1; x - i >= 0; i++) {
             if (board[x-i][y] == null) {
-                possible_moves.add(new Point(x - i, y));
+                possible_moves.add(new BoardPoint(x - i, y));
             }
             else {
-                if (board[x - i][y].isWhite() != rook.isWhite()) {
-                    possible_moves.add(new Point(x - i, y));
-                    break;
+                if (board[x - i][y].isWhite() != piece.isWhite()) {
+                    possible_moves.add(new BoardPoint(x - i, y));
                 }
-                else {
-                    break;
+                break;
+            }
+        }
+    }
+
+    private void fillPossibleMovesForKing (King king) {
+        possible_moves.clear();
+        final int x = king.getX_position();
+        final int y = king.getY_position();
+
+        for (int i = -1; i <= 1; i++) {
+            for (int j = -1; j <= 1; j++) {
+                // Prevent checking on the square it's on.
+                if (i == 0 && i == j) {
+                    continue;
+                }
+
+                System.out.println(i + " " + j);
+                //System.out.println("King moves: " + (x+i) + " " + (y+i));
+
+                if (x+i >= 0 && x+i < 8 && y+j >= 0 && y+j < 8) {
+                    if (board[x+i][y+j] == null) {
+                        possible_moves.add(new BoardPoint(x+i, y+j));
+                    }
+                    else {
+                        if (king.isWhite() != board[x+i][y+j].isWhite()) {
+                            possible_moves.add(new BoardPoint(x+i, y+j));
+                        }
+                    }
                 }
             }
         }
@@ -408,10 +425,10 @@ public class ViewController extends JPanel implements MouseListener {
             fillPossibleMovesForBishop((Bishop) piece);
         }
         else if (piece.getClass() == Queen.class) {
-            System.out.printf("Q");
+            fillPossibleMovesForQueen((Queen) piece);
         }
         else if (piece.getClass() == King.class) {
-            System.out.printf("K");
+            fillPossibleMovesForKing((King) piece);
         }
     }
 
@@ -430,10 +447,8 @@ public class ViewController extends JPanel implements MouseListener {
         System.out.println("Click: " + x_tile + " " + y_tile);
 
         if (currently_viewing == null) {
-//            System.out.println("Initiate");
             currently_viewing = board[x_tile][y_tile];
             if (currently_viewing != null) {
-//                System.out.println("Find Moves");
                 fillPossibleMoves(currently_viewing);
                 System.out.printf("Moves: %s\n", possible_moves);
                 return;
@@ -442,7 +457,7 @@ public class ViewController extends JPanel implements MouseListener {
 
         if (currently_viewing != null) {
 //            System.out.println("Move To");
-            for (Point possible_move : possible_moves) {
+            for (BoardPoint possible_move : possible_moves) {
                 if (possible_move.x == x_tile && possible_move.y == y_tile) {
                     int prev_x = currently_viewing.getX_position();
                     int prev_y = currently_viewing.getY_position();

@@ -38,4 +38,5 @@ public class Pawn extends Piece {
         }
         g.drawImage(img,50*(getX_position()+1), 50*(getY_position()+1), 50, 50, null);
     }
+
 }

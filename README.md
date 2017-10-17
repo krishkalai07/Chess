@@ -16,9 +16,13 @@ Bishop movement - Done
 
 Rook movement - Done
 
-Queen movement - Not started
+Queen movement - Done
 
-King movement - Not started
+King movement - In progress
+
+- King moves anywhere - Done
+
+- King should not move in an enemy controlled square - In progress 
 
 Player turns - Not started
 
