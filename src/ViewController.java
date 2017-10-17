@@ -6,6 +6,22 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
 
+/** ViewController for this game. This holds most of the logic and graphics.
+ * class synopsis:
+ * id   ViewController ();
+ * void paintComponent ();
+ * void printBoard ();
+ * void initialize_board();
+ * void fillPossibleMovesForPawn(Pawn pawn);
+ * void fillPossibleMovesForKnight(Knight knight);
+ * void fillPossibleMovesForBishop(Bishop bishop);
+ * void fillPossibleMovesForRook(Rook rook);
+ * void fillPossibleMovesForQueen(Queen queen);
+ * void fillPossibleMovesForKing (King king);
+ * void fillAllMovesDiagonally (Piece piece);
+ * void fillAllMovesVertically (Piece piece);
+ * void fillPossibleMoves(Piece piece);
+ */
 public class ViewController extends JPanel implements MouseListener {
     public static final int SCREEN_WIDTH = 600;
     public static final int SCREEN_HEIGHT = 600;
@@ -13,6 +29,8 @@ public class ViewController extends JPanel implements MouseListener {
     private Piece board[][];
     private Piece currently_viewing;
     private Vector<BoardPoint> possible_moves;
+    private Vector<BoardPoint> white_control;
+    private Vector<BoardPoint> black_control;
 
     ViewController() {
         setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -21,6 +39,8 @@ public class ViewController extends JPanel implements MouseListener {
         board = new Piece[8][8];
         currently_viewing = null;
         possible_moves = new Vector<>();
+        white_control = new Vector<>();
+        black_control = new Vector<>();
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
@@ -51,11 +71,20 @@ public class ViewController extends JPanel implements MouseListener {
             g.setColor(g.getColor()==Color.DARK_GRAY ? Color.LIGHT_GRAY:Color.DARK_GRAY);
         }
 
+        Color light_green = new Color(50,205,50);
+        Color dark_green = new Color(0,100,0);
         g.setColor(Color.GREEN);
         for (BoardPoint point : possible_moves) {
-            System.out.println("Drawing hints");
             int x = point.x;
             int y = point.y;
+
+            if (x % 2 == y % 2) {
+                g.setColor(light_green);
+            }
+            else {
+                g.setColor(dark_green);
+            }
+
             g.fillRect(50*(x+1), 50*(y+1), 50, 50);
         }
 
