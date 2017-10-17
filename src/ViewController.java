@@ -51,6 +51,14 @@ public class ViewController extends JPanel implements MouseListener {
             g.setColor(g.getColor()==Color.DARK_GRAY ? Color.LIGHT_GRAY:Color.DARK_GRAY);
         }
 
+        g.setColor(Color.GREEN);
+        for (BoardPoint point : possible_moves) {
+            System.out.println("Drawing hints");
+            int x = point.x;
+            int y = point.y;
+            g.fillRect(50*(x+1), 50*(y+1), 50, 50);
+        }
+
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] != null) {
@@ -171,7 +179,7 @@ public class ViewController extends JPanel implements MouseListener {
 
             // First move can move 2 spaces forward.
             if (possible_moves.size() > 0) {
-                if (pawn.getY_position() == 2) {
+                if (pawn.getY_position() == 1) {
                     if (board[pawn.getX_position()][pawn.getY_position() + 2] == null) {
                         possible_moves.add(new BoardPoint(pawn.getX_position(), pawn.getY_position() + 2));
                     }
@@ -194,51 +202,17 @@ public class ViewController extends JPanel implements MouseListener {
         int x = knight.getX_position();
         int y = knight.getY_position();
 
-        // Right
-        if (x + 2 < 8 && y + 1 < 8) {
-            if (board[x+2][y+1] == null || board[x+2][y+1].isWhite() != knight.isWhite()) {
-                possible_moves.add(new BoardPoint(x + 2, y + 1));
-            }
-        }
-        if (x + 2 < 8 && y - 1 >= 0) {
-            if (board[x+2][y-1] == null || board[x+2][y-1].isWhite() != knight.isWhite()) {
-                possible_moves.add(new BoardPoint(x + 2, y - 1));
-            }
-        }
+        for (int i = -2; i <= 2; i++) {
+            for (int j = -2; j <= 2; j++) {
+                if (i == 0 || j == 0 || i == j || i == -j || -i == j) {
+                    continue;
+                }
 
-        // Down
-        if (x - 1 >= 0 && y + 2 < 8) {
-            if (board[x-1][y+2] == null || board[x-1][y+2].isWhite() != knight.isWhite()) {
-                possible_moves.add(new BoardPoint(x - 1, y + 2));
-            }
-        }
-        if (x + 1 < 8 && y + 2 < 8) {
-            if (board[x+1][y+2] == null || board[x+1][y+2].isWhite() != knight.isWhite()) {
-                possible_moves.add(new BoardPoint(x + 1, y + 2));
-            }
-        }
-
-        // Left
-        if (x - 2 >= 0 && y - 1 >= 0) {
-            if (board[x-2][y-1] == null || board[x-2][y-1].isWhite() != knight.isWhite()) {
-                possible_moves.add(new BoardPoint(x - 2, y - 1));
-            }
-        }
-        if (x - 2 >= 0 && y + 1 < 8) {
-            if (board[x-2][y+1] == null || board[x-2][y+1].isWhite() != knight.isWhite()) {
-                possible_moves.add(new BoardPoint(x - 2, y + 1));
-            }
-        }
-
-        // Up
-        if (x - 1 >= 0 && y - 2 >= 0) {
-            if (board[x - 1][y - 2] == null || board[x - 1][y - 2].isWhite() != knight.isWhite()) {
-                possible_moves.add(new BoardPoint(x - 1, y - 2));
-            }
-        }
-        if (x + 1 < 8 && y - 2 >= 0) {
-            if (board[x + 1][y - 2] == null || board[x + 1][y - 2].isWhite() != knight.isWhite()) {
-                possible_moves.add(new BoardPoint(x + 1, y - 2));
+                if (x+i >= 0 && x+i < 8 && y+j >= 0 && y+j < 8) {
+                    if (board[x + i][y + j] == null || knight.isWhite() != board[x + i][y + j].isWhite()) {
+                        possible_moves.add(new BoardPoint(x + i, y + j));
+                    }
+                }
             }
         }
     }
@@ -263,11 +237,8 @@ public class ViewController extends JPanel implements MouseListener {
         final int x = piece.getX_position();
         final int y = piece.getY_position();
 
-        System.out.println("Bishop at " + x  + " " + y);
-
         // All left up
         for (int i = 1; x - i >= 0 && y - i >= 0; i++) {
-            System.out.println("Evaluating: " + (x-i) + " " + (y-i));
             if (board[x-i][y-i] == null) {
                 possible_moves.add(new BoardPoint(x-i, y-i));
             }
@@ -281,7 +252,6 @@ public class ViewController extends JPanel implements MouseListener {
 
         // All left down
         for (int i = 1; x - i >= 0 && y + i < 8; i++) {
-            System.out.println("Left down " + (x-i) + " " + (y+i));
             if (board[x - i][y + i] == null) {
                 possible_moves.add(new BoardPoint(x - i, y + i));
             }
@@ -295,7 +265,6 @@ public class ViewController extends JPanel implements MouseListener {
 
         // All right down
         for (int i = 1; x + i < 8 && y + i < 8; i++) {
-            System.out.println("UP Right: " + (x+i) + " " + (y-i));
             if (board[x + i][y + i] == null) {
                 possible_moves.add(new BoardPoint(x + i, y + i));
             }
@@ -309,7 +278,6 @@ public class ViewController extends JPanel implements MouseListener {
 
         // All right up
         for (int i = 1; x + i < 8 && y - i >= 0; i++) {
-            System.out.println("UP Right: " + (x+i) + " " + (y-i));
             if (board[x + i][y - i] == null) {
                 possible_moves.add(new BoardPoint(x + i, y - i));
             }
@@ -386,13 +354,10 @@ public class ViewController extends JPanel implements MouseListener {
 
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
-                // Prevent checking on the square it's on.
+                // Prevent checking the square it's on.
                 if (i == 0 && i == j) {
                     continue;
                 }
-
-                System.out.println(i + " " + j);
-                //System.out.println("King moves: " + (x+i) + " " + (y+i));
 
                 if (x+i >= 0 && x+i < 8 && y+j >= 0 && y+j < 8) {
                     if (board[x+i][y+j] == null) {
@@ -403,6 +368,24 @@ public class ViewController extends JPanel implements MouseListener {
                             possible_moves.add(new BoardPoint(x+i, y+j));
                         }
                     }
+                }
+            }
+        }
+
+        // Castling
+        if (!king.has_moved()) {
+            // Castling king-side
+            if (board[x+1][y] == null && board[x+2][y] == null) {
+                System.out.println("Is clear");
+                if (board[x+3][y] != null && board[x+3][y].getClass() == Rook.class && !((Rook)board[x+3][y]).did_move()) {
+                    System.out.println("Rook exists");
+                    possible_moves.add(new BoardPoint(x + 2, y));
+                }
+            }
+            // Castling queen-side
+            if (board[x-1][y] == null && board[x-2][y] == null && board[x-3][y] == null) {
+                if (board[x-4][y] != null && board[x-4][y].getClass() == Rook.class && !((Rook)board[x-4][y]).did_move()) {
+                    possible_moves.add(new BoardPoint(x - 2, y));
                 }
             }
         }
@@ -451,12 +434,12 @@ public class ViewController extends JPanel implements MouseListener {
             if (currently_viewing != null) {
                 fillPossibleMoves(currently_viewing);
                 System.out.printf("Moves: %s\n", possible_moves);
+                repaint();
                 return;
             }
         }
 
         if (currently_viewing != null) {
-//            System.out.println("Move To");
             for (BoardPoint possible_move : possible_moves) {
                 if (possible_move.x == x_tile && possible_move.y == y_tile) {
                     int prev_x = currently_viewing.getX_position();
@@ -467,11 +450,59 @@ public class ViewController extends JPanel implements MouseListener {
                     currently_viewing.setY_position(y_tile);
                     board[prev_x][prev_y] = null;
 
+                    // If a rook is moving, then set did_move to true so player can't castle that side.
+                    if (currently_viewing.getClass() == Rook.class) {
+                        ((Rook)currently_viewing).set_move(true);
+                    }
+                    // Apply King's castling.
+                    else if (currently_viewing.getClass() == King.class) {
+                        ((King)currently_viewing).set_has_moved(true);
+
+                        // Apply Castling king-side
+                        if (prev_x + 2 == currently_viewing.getX_position()) {
+                            if ((board[7][7] != null && board[7][7].getClass() == Rook.class) || (board[7][0].getClass() != null && board[7][0].getClass() == Rook.class)) {
+                                if (currently_viewing.isWhite()) {
+                                    Rook castle_piece = (Rook) board[7][7];
+                                    castle_piece.setX_position(5);
+
+                                    board[5][7] = castle_piece;
+                                    board[7][7] = null;
+                                }
+                                else {
+                                    Rook castle_piece = (Rook) board[7][0];
+                                    castle_piece.setX_position(5);
+
+                                    board[5][0] = castle_piece;
+                                    board[7][0] = null;
+                                }
+                            }
+                        }
+                        // Apply Castling queen-side
+                        if (prev_x - 2 == currently_viewing.getX_position()) {
+                            if (board[0][7] != null && board[0][7].getClass() == Rook.class || board[0][0] != null && board[0][0].getClass() == Rook.class) {
+                                if(currently_viewing.isWhite()) {
+                                    Rook castle_piece = (Rook) board[0][7];
+                                    castle_piece.setX_position(3);
+
+                                    board[3][7] = castle_piece;
+                                    board[0][7] = null;
+                                }
+                                else {
+                                    Rook castle_piece = (Rook)board[0][0];
+                                    castle_piece.setX_position(3);
+
+                                    board[3][0] = castle_piece;
+                                    board[0][0] = null;
+                                }
+                            }
+                        }
+                    }
                     break;
                 }
             }
             currently_viewing = null;
         }
+        possible_moves.clear();
         repaint();
     }
 
