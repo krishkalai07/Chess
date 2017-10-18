@@ -87,6 +87,37 @@ public class Bishop extends Piece {
 
     @Override
     public void getControlledSquares(List<BoardPoint> vector) {
-        getPossibleMoves(vector);
+        // All left up
+        for (int i = 1; x_position - i >= 0 && y_position - i >= 0; i++) {
+            vector.add(new BoardPoint(x_position - i, y_position - i));
+            if (board[x_position - i][y_position - i] != null) {
+                break;
+            }
+        }
+
+        // All left down
+        for (int i = 1; x_position - i >= 0 && y_position + i < 8; i++) {
+            vector.add(new BoardPoint(x_position - i, y_position + i));
+            if (board[x_position - i][y_position + i] != null) {
+                break;
+            }
+
+        }
+
+        // All right down
+        for (int i = 1; x_position + i < 8 && y_position + i < 8; i++) {
+            vector.add(new BoardPoint(x_position + i, y_position + i));
+            if (board[x_position + i][y_position + i] != null) {
+                break;
+            }
+        }
+
+        // All right up
+        for (int i = 1; x_position + i < 8 && y_position - i >= 0; i++) {
+            vector.add(new BoardPoint(x_position + i, y_position - i));
+            if (board[x_position + i][y_position - i] != null) {
+                break;
+            }
+        }
     }
 }

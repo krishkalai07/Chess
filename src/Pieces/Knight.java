@@ -56,9 +56,7 @@ public class Knight extends Piece {
                 }
 
                 if (x_position + i >= 0 && x_position + i < 8 && y_position + j >= 0 && y_position + j < 8) {
-                    if (board[x_position + i][y_position + j] == null || this.color != board[x_position + i][y_position + j].color) {
-                        vector.add(new BoardPoint(x_position + i, y_position + j));
-                    }
+                    vector.add(new BoardPoint(x_position + i, y_position + j));
                 }
             }
         }

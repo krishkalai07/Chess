@@ -82,7 +82,7 @@ public class Pawn extends Piece {
                 vector.add(point);
             }
         }
-        if (y_position != 7) {
+        if (x_position != 7) {
             BoardPoint point = new BoardPoint(x_position + 1, y_position + motion_direction);
             if (!vector.contains(point)) {
                 vector.add(point);

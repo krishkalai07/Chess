@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.List;
 import java.util.Vector;
 
 /** ViewController for this game. This holds most of the logic and graphics.
@@ -23,9 +24,7 @@ import java.util.Vector;
  * void fillPossibleMoves(Piece piece);
  */
 public class ViewController extends JPanel implements MouseListener {
-    public static final int SCREEN_WIDTH = 600;
-    public static final int SCREEN_HEIGHT = 600;
-
+    private boolean turn;
     private Piece board[][];
     private Piece currently_viewing;
     private Vector<BoardPoint> possible_moves;
@@ -33,9 +32,10 @@ public class ViewController extends JPanel implements MouseListener {
     private Vector<BoardPoint> black_control;
 
     ViewController() {
-        setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+        setSize(600, 600);
         setBackground(new Color(0x000000));
 
+        turn = true;
         board = new Piece[8][8];
         currently_viewing = null;
         possible_moves = new Vector<>();
@@ -50,6 +50,13 @@ public class ViewController extends JPanel implements MouseListener {
 
         initialize_board();
 
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (board[i][j] != null) {
+                    board[i][j].getControlledSquares(board[i][j].isWhite() ? white_control : black_control);
+                }
+            }
+        }
 
         addMouseListener(this);
     }
@@ -73,6 +80,7 @@ public class ViewController extends JPanel implements MouseListener {
 
         Color light_green = new Color(50,205,50);
         Color dark_green = new Color(0,100,0);
+
         g.setColor(Color.GREEN);
         for (Pieces.BoardPoint point : possible_moves) {
         //for (Pieces.BoardPoint point : white_control) {
@@ -173,6 +181,15 @@ public class ViewController extends JPanel implements MouseListener {
         }
     }
 
+    public boolean containsPointInVector(List<BoardPoint> points, BoardPoint point) {
+        for (BoardPoint p : points) {
+            if (p.equals(point)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //
     // Implement methods for MouseListener
     //
@@ -187,80 +204,75 @@ public class ViewController extends JPanel implements MouseListener {
 
         System.out.println("Click: " + x_tile + " " + y_tile);
 
-        if (currently_viewing == null) {
-            currently_viewing = board[x_tile][y_tile];
-            if (currently_viewing != null) {
-                possible_moves.clear();
-                currently_viewing.getPossibleMoves(possible_moves);
-                //fillPossibleMoves(currently_viewing, possible_moves);
-                System.out.printf("Moves: %s\n", possible_moves);
-                repaint();
+        if (x_tile < 0 || x_tile >= 8 || y_tile < 0 || y_tile >= 8) {
+            return;
+        }
+
+        Piece clicked_space = board[x_tile][y_tile];
+
+        if (clicked_space == null) {
+            if (currently_viewing == null) {
                 return;
             }
-        }
+            if (containsPointInVector(possible_moves, new BoardPoint(x_tile, y_tile))) {
+                int prev_x = currently_viewing.getX_position();
+                int prev_y = currently_viewing.getY_position();
 
-        if (currently_viewing != null) {
-            for (BoardPoint possible_move : possible_moves) {
-                if (possible_move.x == x_tile && possible_move.y == y_tile) {
-                    int prev_x = currently_viewing.getX_position();
-                    int prev_y = currently_viewing.getY_position();
+                board[x_tile][y_tile] = currently_viewing;
+                currently_viewing.setX_position(x_tile);
+                currently_viewing.setY_position(y_tile);
+                board[prev_x][prev_y] = null;
 
-                    board[x_tile][y_tile] = currently_viewing;
-                    currently_viewing.setX_position(x_tile);
-                    currently_viewing.setY_position(y_tile);
-                    board[prev_x][prev_y] = null;
+                turn = !turn;
 
-                    // If a rook is moving, then set did_move to true so player can't castle that side.
-                    if (currently_viewing.getClass() == Rook.class) {
-                        ((Rook)currently_viewing).set_move(true);
-                    }
-                    // Apply King's castling.
-                    else if (currently_viewing.getClass() == King.class) {
-                        ((King)currently_viewing).set_has_moved(true);
-                        int row = currently_viewing.isWhite() ? 7 : 0;
+                possible_moves.clear();
 
-                        // Apply Castling king-side
-                        if (prev_x + 2 == currently_viewing.getX_position()) {
-                            if ((board[7][row] != null && board[7][row].getClass() == Rook.class)) {
-                                Rook castle_piece = (Rook) board[7][row];
-                                castle_piece.setX_position(5);
-
-                                board[5][row] = castle_piece;
-                                board[7][row] = null;
-                            }
-                        }
-                        // Apply Castling queen-side
-                        if (prev_x - 2 == currently_viewing.getX_position()) {
-                            if (board[0][row] != null && board[0][row].getClass() == Rook.class) {
-                                Rook castle_piece = (Rook) board[0][row];
-                                castle_piece.setX_position(3);
-
-                                board[3][row] = castle_piece;
-                                board[0][row] = null;
-                            }
+                for (int i = 0; i < 8; i++) {
+                    for (int j = 0; j < 8; j++) {
+                        if (board[i][j] != null) {
+                            board[i][j].getControlledSquares(board[i][j].isWhite() ? white_control : black_control);
                         }
                     }
-                    break;
                 }
-            }
-            currently_viewing = null;
-        }
 
-        white_control.clear();
-        black_control.clear();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                if (board[i][j] != null) {
-                    board[i][j].getControlledSquares(board[i][j].isWhite() ? white_control : black_control);
-                }
+                repaint();
             }
         }
+        else {
+            if (clicked_space.isWhite() == turn) {
+                currently_viewing = clicked_space;
+                possible_moves.clear();
+                currently_viewing.getPossibleMoves(possible_moves);
+                repaint();
+            }
+            else {
+                if (currently_viewing != null) {
+                    if (containsPointInVector(possible_moves, new BoardPoint(x_tile, y_tile))) {
+                        int prev_x = currently_viewing.getX_position();
+                        int prev_y = currently_viewing.getY_position();
 
-        //System.out.println("White: " + white_control);
-        System.out.println("Black: " + black_control);
+                        board[x_tile][y_tile] = currently_viewing;
+                        currently_viewing.setX_position(x_tile);
+                        currently_viewing.setY_position(y_tile);
+                        board[prev_x][prev_y] = null;
 
-        possible_moves.clear();
-        repaint();
+                        turn = !turn;
+
+                        possible_moves.clear();
+
+                        for (int i = 0; i < 8; i++) {
+                            for (int j = 0; j < 8; j++) {
+                                if (board[i][j] != null) {
+                                    board[i][j].getControlledSquares(board[i][j].isWhite() ? white_control : black_control);
+                                }
+                            }
+                        }
+
+                        repaint();
+                    }
+                }
+            }
+        }
     }
 
     @Override
