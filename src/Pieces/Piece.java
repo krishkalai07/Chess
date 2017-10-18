@@ -1,18 +1,29 @@
 package Pieces;
 
 import java.awt.*;
+import java.util.List;
 
 public abstract class Piece {
-    private int x_position;
-    private int y_position;
+    protected int x_position;
+    protected int y_position;
     private int capture_weight;
-    private boolean color;
+    protected boolean color;
+    protected Piece board[][];
 
-    Piece (int x_position, int y_position, int capture_weight, boolean is_white) {
+    /**
+     * Constructor for a piece.
+     *
+     * @param x_position     The row the piece is on in the board.
+     * @param y_position     The column the piece is on in the board.
+     * @param capture_weight The value of the piece (in pawns).
+     * @param is_white       True if the piece color is white, false otherwise.
+     */
+    Piece (int x_position, int y_position, int capture_weight, boolean is_white, Piece[][] board_ref) {
         this.x_position = x_position;
         this.y_position = y_position;
         this.capture_weight = capture_weight;
         this.color = is_white;
+        this.board = board_ref;
     }
 
     public abstract void draw(Graphics g);
@@ -36,4 +47,8 @@ public abstract class Piece {
     public boolean isWhite() {
         return color;
     }
+
+    public abstract void getPossibleMoves(List<BoardPoint> vector);
+
+    public abstract void getControlledSquares(List<BoardPoint> vector);
 }

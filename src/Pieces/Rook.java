@@ -5,12 +5,13 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class Rook extends Piece {
     private boolean did_move; // Used for castling.
 
-    public Rook(int x_position, int y_position, boolean is_white) {
-        super(x_position, y_position, 5, is_white);
+    public Rook(int x_position, int y_position, boolean is_white, Piece[][] board) {
+        super(x_position, y_position, 5, is_white, board);
         did_move = false;
     }
 
@@ -38,5 +39,65 @@ public class Rook extends Piece {
 
     public void set_move(boolean did_move) {
         this.did_move = did_move;
+    }
+
+    @Override
+    public void getPossibleMoves(List<BoardPoint> vector) {
+        // Up
+        for (int i = 1; y_position - i >= 0; i++) {
+            if (board[x_position][y_position-i] == null) {
+                vector.add(new BoardPoint(x_position, y_position - i));
+            }
+            else {
+                if (board[x_position][y_position - i].color != this.color) {
+                    vector.add(new BoardPoint(x_position, y_position - i));
+                }
+                break;
+            }
+        }
+
+        // Right
+        for (int i = 1; x_position + i < 8; i++) {
+            if (board[x_position+i][y_position] == null) {
+                vector.add(new BoardPoint(x_position+i, y_position));
+            }
+            else {
+                if (board[x_position+i][y_position].color != this.color) {
+                    vector.add(new BoardPoint(x_position + i, y_position));
+                }
+                break;
+            }
+        }
+
+        // Down
+        for (int i = 1; y_position + i < 8; i++) {
+            if (board[x_position][y_position+i] == null) {
+                vector.add(new BoardPoint(x_position, y_position + i));
+            }
+            else {
+                if (board[x_position][y_position + i].isWhite() != this.color) {
+                    vector.add(new BoardPoint(x_position, y_position + i));
+                }
+                break;
+            }
+        }
+
+        //Left
+        for (int i = 1; x_position - i >= 0; i++) {
+            if (board[x_position-i][y_position] == null) {
+                vector.add(new BoardPoint(x_position - i, y_position));
+            }
+            else {
+                if (board[x_position - i][y_position].color != this.color) {
+                    vector.add(new BoardPoint(x_position - i, y_position));
+                }
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void getControlledSquares(List<BoardPoint> vector) {
+        getPossibleMoves(vector);
     }
 }

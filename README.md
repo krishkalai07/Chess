@@ -38,3 +38,6 @@ Checkmate - Not started
 Move hints - Done
 
 Game log - Not started
+
+#Humor
+Anyone know the strange relief when you refactor 308 lines of code? No, that's just me. Ok then.
