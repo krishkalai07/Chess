@@ -61,4 +61,9 @@ public class Knight extends Piece {
             }
         }
     }
+
+    @Override
+    public Piece clone() {
+        return new Knight(x_position, y_position, color, board);
+    }
 }

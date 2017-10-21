@@ -48,7 +48,13 @@ public abstract class Piece {
         return color;
     }
 
+    public void setBoard(Piece[][] board) {
+        this.board = board;
+    }
+
     public abstract void getPossibleMoves(List<BoardPoint> vector);
 
     public abstract void getControlledSquares(List<BoardPoint> vector);
+
+    public abstract Piece clone();
 }

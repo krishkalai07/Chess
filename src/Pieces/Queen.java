@@ -204,4 +204,8 @@ public class Queen extends Piece {
             }
         }
     }
+
+    public Queen clone() {
+        return new Queen(x_position, y_position, color, board);
+    }
 }

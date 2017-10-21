@@ -130,4 +130,8 @@ public class Rook extends Piece {
             }
         }
     }
+
+    public Rook clone() {
+        return new Rook(x_position, y_position, color, board);
+    }
 }

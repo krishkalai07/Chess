@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class Bishop extends Piece {
-    public Bishop(int x_position, int y_position, int capture_weight, boolean is_white, Piece[][] board) {
+    public Bishop(int x_position, int y_position, boolean is_white, Piece[][] board) {
         super(x_position, y_position, 0, is_white, board);
     }
 
@@ -119,5 +119,9 @@ public class Bishop extends Piece {
                 break;
             }
         }
+    }
+
+    public Bishop clone() {
+        return new Bishop(x_position, y_position, color, board);
     }
 }

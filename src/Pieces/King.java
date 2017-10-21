@@ -9,15 +9,20 @@ import java.util.List;
 import java.util.Vector;
 
 public class King extends Piece {
-    private boolean is_check;
     private boolean has_moved; //Used for castling
     private Vector<BoardPoint> white_control;
     private Vector<BoardPoint> black_control;
 
     public King(int x_position, int y_position, boolean is_white, Piece[][] board, Vector<BoardPoint> white_control, Vector<BoardPoint> black_control) {
         super(x_position, y_position, 0, is_white, board);
-        is_check = false;
         has_moved = false;
+        this.white_control = white_control;
+        this.black_control = black_control;
+    }
+
+    public King(int x_position, int y_position, boolean is_white, Piece[][] board, Vector<BoardPoint> white_control, Vector<BoardPoint> black_control, boolean has_moved) {
+        super(x_position, y_position, 0, is_white, board);
+        this.has_moved = has_moved;
         this.white_control = white_control;
         this.black_control = black_control;
     }
@@ -40,14 +45,6 @@ public class King extends Piece {
         g.drawImage(img,50*(getX_position()+1), 50*(getY_position()+1), 50, 50, null);
     }
 
-    public boolean isCheck() {
-        return is_check;
-    }
-
-    public void setCheck(boolean is_check) {
-        this.is_check = is_check;
-    }
-
     public boolean has_moved() {
         return has_moved;
     }
@@ -67,8 +64,6 @@ public class King extends Piece {
                 if (x_position+i >= 0 && x_position+i < 8 && y_position+j >= 0 && y_position+j < 8) {
                     if (board[x_position+i][y_position+j] == null) {
                         BoardPoint point = new BoardPoint(x_position+i, y_position+j);
-                        System.out.println("Point: " + point);
-                        //System.out.println("Contains: " + containsPointInVector(black_control, point));
                         if (this.color && !containsPointInVector(black_control, point)) {
                             vector.add(new BoardPoint(x_position+i, y_position+j));
                         }
@@ -96,6 +91,10 @@ public class King extends Piece {
         return false;
     }
 
+    public boolean containsPointInVector (List<BoardPoint> points, int x, int y) {
+        return containsPointInVector(points, new BoardPoint(x, y));
+    }
+
     @Override
     public void getPossibleMoves(List<BoardPoint> vector) {
         fillNormalKingMoves(vector);
@@ -104,14 +103,18 @@ public class King extends Piece {
         if (!has_moved) {
             // Castling king-side
             if (board[x_position+1][y_position] == null && board[x_position+2][y_position] == null) {
-                if (board[x_position+3][y_position] != null && board[x_position+3][y_position].getClass() == Rook.class && !((Rook)board[x_position+3][y_position]).did_move()) {
-                    vector.add(new BoardPoint(x_position + 2, y_position));
+                if (!containsPointInVector(color ? black_control : white_control, x_position + 1, y_position) && !containsPointInVector(color ? black_control : white_control, x_position + 2, y_position)) {
+                    if (board[x_position + 3][y_position] != null && board[x_position + 3][y_position].getClass() == Rook.class && !((Rook) board[x_position + 3][y_position]).did_move()) {
+                        vector.add(new BoardPoint(x_position + 2, y_position));
+                    }
                 }
             }
             // Castling queen-side
             if (board[x_position-1][y_position] == null && board[x_position-2][y_position] == null && board[x_position-3][y_position] == null) {
-                if (board[x_position-4][y_position] != null && board[x_position-4][y_position].getClass() == Rook.class && !((Rook)board[x_position-4][y_position]).did_move()) {
-                    vector.add(new BoardPoint(x_position - 2, y_position));
+                if (!containsPointInVector(color ? black_control : white_control, x_position - 1, y_position) && !containsPointInVector(color ? black_control : white_control, x_position - 2, y_position)) {
+                    if (board[x_position - 4][y_position] != null && board[x_position - 4][y_position].getClass() == Rook.class && !((Rook) board[x_position - 4][y_position]).did_move()) {
+                        vector.add(new BoardPoint(x_position - 2, y_position));
+                    }
                 }
             }
         }
@@ -120,5 +123,16 @@ public class King extends Piece {
     @Override
     public void getControlledSquares(List<BoardPoint> vector) {
         fillNormalKingMoves(vector);
+    }
+
+    @Override
+    public String toString() {
+        //return (color ? "White" : "Black") + " King at " + x_position + " " + y_position;
+        return super.toString();
+    }
+
+    public King clone() {
+        return new King(x_position, y_position, color, board, white_control, black_control, has_moved);
+
     }
 }

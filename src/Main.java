@@ -1,8 +1,6 @@
 import javax.swing.*;
 
 public class Main {
-    public static int BOARD_SIZE = 8;
-
     public static void main(String[] args) {
         JFrame window = new JFrame("Chess");
         ViewController content = new ViewController();

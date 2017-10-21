@@ -1,14 +1,15 @@
 # Chess
 Chess game made for fun.
 
-If you want to run, then compile and run Main.java .
+If you want to run, then compile and run `Main.java`.
 
-# Progress
+# 
+Progress
 Board and pieces drawn - Done
 
 Pawn movement - In Progress
 
-- Everything except for en passant is ready. That will be done later.
+- En passant - Not started
     
 Knight movement - Done
 
@@ -24,11 +25,11 @@ King movement - In progress
 
 - Castling - Done
 
-- King should not move in an enemy controlled square - In progress 
+- King should not move in an enemy controlled square - Done 
 
-Player turns - Not started
+Player turns - Done
 
-King in check - Not started
+King in check - Done
 
 Stalemate - Not started
 
@@ -37,7 +38,11 @@ Checkmate - Not started
 #Extraneous goals
 Move hints - Done
 
+Controlled squares - Done
+
 Game log - Not started
 
 #Humor
 Anyone know the strange relief when you refactor 308 lines of code? No, that's just me. Ok then.
+
+Who likes boolean logic? Not me. Especially simple statements such as `turn && isPointInVector(...)`

@@ -89,4 +89,8 @@ public class Pawn extends Piece {
             }
         }
     }
+
+    public Pawn clone() {
+        return new Pawn(x_position, y_position, color, board);
+    }
 }
