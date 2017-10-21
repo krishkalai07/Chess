@@ -10,6 +10,8 @@ Board and pieces drawn - Done
 Pawn movement - In Progress
 
 - En passant - Not started
+
+- Pawn promotion - Not started
     
 Knight movement - Done
 

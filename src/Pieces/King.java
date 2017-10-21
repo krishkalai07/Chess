@@ -101,6 +101,10 @@ public class King extends Piece {
 
         // Castling
         if (!has_moved) {
+            if (containsPointInVector(color ? black_control : white_control, x_position, y_position)) {
+                return;
+            }
+
             // Castling king-side
             if (board[x_position+1][y_position] == null && board[x_position+2][y_position] == null) {
                 if (!containsPointInVector(color ? black_control : white_control, x_position + 1, y_position) && !containsPointInVector(color ? black_control : white_control, x_position + 2, y_position)) {
