@@ -82,6 +82,19 @@ public class Rook extends Piece {
                 break;
             }
         }
+
+        //Left
+        for (int i = 1; xPosition - i >= 0; i++) {
+            if (board[xPosition - i][yPosition] == null) {
+                pointList.add(new BoardPoint(xPosition - i, yPosition));
+            }
+            else {
+                if (board[xPosition - i][yPosition].color != this.color) {
+                    pointList.add(new BoardPoint(xPosition - i, yPosition));
+                }
+                break;
+            }
+        }
     }
 
     @Override
