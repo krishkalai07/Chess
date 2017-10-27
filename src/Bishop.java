@@ -1,7 +1,6 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -15,12 +14,16 @@ public class Bishop extends Piece {
         BufferedImage img = null;
         try {
             if (super.isWhite()) {
-                String filename = "vc_assets/WhiteBishop.png";
-                img = ImageIO.read(new File(filename));
+                //String filename = "vc_assets/WhiteBishop.png";
+                //img = ImageIO.read(new File(filename));
+                String filename = "/WhiteBishop.png";
+                img = ImageIO.read(getClass().getResource(filename));
             }
             else {
-                String filename = "vc_assets/BlackBishop.png";
-                img = ImageIO.read(new File(filename));
+//                String filename = "vc_assets/BlackBishop.png";
+//                img = ImageIO.read(new File(filename));
+                String filename = "/BlackBishop.png";
+                img = ImageIO.read(getClass().getResource(filename));
             }
         } catch (IOException e) {
             System.err.println("File cannot be read");

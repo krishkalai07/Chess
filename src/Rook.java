@@ -1,7 +1,6 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -26,12 +25,16 @@ public class Rook extends Piece {
         BufferedImage img = null;
         try {
             if (super.color) {
-                String filename = "vc_assets/WhiteRook.png";
-                img = ImageIO.read(new File(filename));
+//                String filename = "vc_assets/WhiteRook.png";
+//                img = ImageIO.read(new File(filename));
+                String filename = "/WhiteRook.png";
+                img = ImageIO.read(getClass().getResource(filename));
             }
             else {
-                String filename = "vc_assets/BlackRook.png";
-                img = ImageIO.read(new File(filename));
+//                String filename = "vc_assets/BlackRook.png";
+//                img = ImageIO.read(new File(filename));
+                String filename = "/BlackRook.png";
+                img = ImageIO.read(getClass().getResource(filename));
             }
         } catch (IOException e) {
             System.err.println("File cannot be read");

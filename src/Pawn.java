@@ -1,7 +1,6 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -95,12 +94,16 @@ public class Pawn extends Piece {
         BufferedImage img = null;
         try {
             if (isWhite()) {
-                String filename = "vc_assets/WhitePawn.png";
-                img = ImageIO.read(new File(filename));
+//                String filename = "vc_assets/WhitePawn.png";
+//                img = ImageIO.read(new File(filename));
+                String filename = "/WhitePawn.png";
+                img = ImageIO.read(getClass().getResource(filename));
             }
             else {
-                String filename = "vc_assets/BlackPawn.png";
-                img = ImageIO.read(new File(filename));
+//                String filename = "vc_assets/BlackPawn.png";
+//                img = ImageIO.read(new File(filename));
+                String filename = "/BlackPawn.png";
+                img = ImageIO.read(getClass().getResource(filename));
             }
         } catch (IOException e) {
             System.err.println("File cannot be read: Pawn");
