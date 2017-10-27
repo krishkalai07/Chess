@@ -112,7 +112,7 @@ public class ChessViewController extends JPanel implements MouseListener {
                 if (tBoard[i][j] != null) {
                     tBoard[i][j].getControlledSquares(tBoard[i][j].isWhite() ? tWhiteControl : tBlackControl, tBoard);
                     if (tBoard[i][j] != null) {
-                        if (tBoard[i][j].getClass() == King.class) {
+                        if (tBoard[i][j] instanceof King) {
                             if (tBoard[i][j].isWhite()) {
                                 whiteKing = (King)tBoard[i][j];
                             }

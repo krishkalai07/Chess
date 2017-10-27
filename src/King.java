@@ -22,8 +22,8 @@ public class King extends Piece {
     }
 
     private boolean vectorContainsPoint(List<BoardPoint> pointList, int x, int y) {
-        for (int i = 0; i < pointList.size(); i++) {
-            if (x == pointList.get(i).x && y == pointList.get(i).y) {
+        for (BoardPoint aPointList : pointList) {
+            if (x == aPointList.x && y == aPointList.y) {
                 return true;
             }
         }
@@ -114,7 +114,7 @@ public class King extends Piece {
             // Castling king-side
             if (board[xPosition+1][yPosition] == null && board[xPosition+2][yPosition] == null) {
                 if (!vectorContainsPoint(controlledSquares, xPosition + 1, yPosition) && !vectorContainsPoint(controlledSquares, xPosition + 2, yPosition)) {
-                    if (board[xPosition + 3][yPosition] != null && (board[xPosition + 3][yPosition]).getClass() == Rook.class && !((Rook)board[xPosition + 3][yPosition]).hasMoved()) {
+                    if (board[xPosition + 3][yPosition] != null && board[xPosition + 3][yPosition] instanceof Rook && !((Rook)board[xPosition + 3][yPosition]).hasMoved()) {
                         pointList.add(new BoardPoint(xPosition + 2, yPosition));
                     }
                 }
@@ -122,7 +122,7 @@ public class King extends Piece {
             // Castling queen-side
             if (board[xPosition-1][yPosition] == null && board[xPosition-2][yPosition] == null && board[xPosition-3][yPosition] == null) {
                 if (!vectorContainsPoint(controlledSquares, xPosition - 1, yPosition) && !vectorContainsPoint(controlledSquares, xPosition - 2, yPosition)) {
-                    if (board[xPosition - 4][yPosition] != null && board[xPosition - 4][yPosition].getClass() == Rook.class && !((Rook)(board[xPosition - 4][yPosition])).hasMoved()) {
+                    if (board[xPosition - 4][yPosition] != null && board[xPosition - 4][yPosition] instanceof Rook && !((Rook)(board[xPosition - 4][yPosition])).hasMoved()) {
                         pointList.add(new BoardPoint(xPosition - 2, yPosition));
                     }
                 }
