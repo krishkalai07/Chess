@@ -3,6 +3,11 @@ Chess game made for fun.
 
 If you want to run, then compile and run `Main.java`.
 
+Run this: 
+
+`$ javac Main.java`
+`$ java Main`
+
 #Progress
 
 Board and pieces drawn - Done
