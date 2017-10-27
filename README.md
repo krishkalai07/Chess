@@ -33,7 +33,7 @@ Player turns - Done
 
 King in check - Done
 
-Stalemate - Not started
+Stalemate - Done
 
 Checkmate - Done
 
@@ -52,3 +52,5 @@ Who likes boolean logic? Not me. Especially simple statements such as `turn and 
 "Wait... why am I able to move this... (the king will be in check) ... Oh. Why does this king say it didn't move \**sigh*\*"
 
 Ok, how does stalemate not work, but checkmate works perfectly fine?
+
+All checks are checkmates. Yes that's my new rule.
