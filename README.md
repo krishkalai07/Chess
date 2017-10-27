@@ -3,8 +3,8 @@ Chess game made for fun.
 
 If you want to run, then compile and run `Main.java`.
 
-# 
-Progress
+#Progress
+
 Board and pieces drawn - Done
 
 Pawn movement - In Progress
@@ -38,6 +38,7 @@ Stalemate - Done
 Checkmate - Done
 
 #Extraneous goals
+
 Move hints - Done
 
 Controlled squares - Done
@@ -45,6 +46,7 @@ Controlled squares - Done
 Game log - Not started
 
 #Humor
+
 Anyone know the strange relief when you refactor 308 lines of code? No, that's just me. Ok then.
 
 Who likes boolean logic? Not me. Especially simple statements such as `turn and isPointInVector(...)`
