@@ -36,7 +36,7 @@ public class King extends Piece {
         return vectorContainsPoint(controlledSquares, xPosition, yPosition);
     }
 
-    public boolean isHasMoved() {
+    public boolean hasMoved() {
         return hasMoved;
     }
 
@@ -111,7 +111,7 @@ public class King extends Piece {
             // Castling king-side
             if (board[xPosition+1][yPosition] == null && board[xPosition+2][yPosition] == null) {
                 if (!vectorContainsPoint(controlledSquares, xPosition + 1, yPosition) && !vectorContainsPoint(controlledSquares, xPosition + 2, yPosition)) {
-                    if (board[xPosition + 3][yPosition] != null && (board[xPosition + 3][yPosition]).getClass() == Rook.class && !((Rook)board[xPosition + 3][yPosition]).didMove()) {
+                    if (board[xPosition + 3][yPosition] != null && (board[xPosition + 3][yPosition]).getClass() == Rook.class && !((Rook)board[xPosition + 3][yPosition]).hasMoved()) {
                         pointList.add(new BoardPoint(xPosition + 2, yPosition));
                     }
                 }
@@ -119,7 +119,7 @@ public class King extends Piece {
             // Castling queen-side
             if (board[xPosition-1][yPosition] == null && board[xPosition-2][yPosition] == null && board[xPosition-3][yPosition] == null) {
                 if (!vectorContainsPoint(controlledSquares, xPosition - 1, yPosition) && !vectorContainsPoint(controlledSquares, xPosition - 2, yPosition)) {
-                    if (board[xPosition - 4][yPosition] != null && board[xPosition - 4][yPosition].getClass() == Rook.class && !((Rook)(board[xPosition - 4][yPosition])).didMove()) {
+                    if (board[xPosition - 4][yPosition] != null && board[xPosition - 4][yPosition].getClass() == Rook.class && !((Rook)(board[xPosition - 4][yPosition])).hasMoved()) {
                         pointList.add(new BoardPoint(xPosition - 2, yPosition));
                     }
                 }
@@ -159,7 +159,7 @@ public class King extends Piece {
         if (Math.abs(xPosition - toX) == 2) {
             if (!hasMoved) {
                 Rook edge_rook = (Rook)(xPosition - toX == 2 ? board[7][(color ? 7 : 0)] : board[0][(color ? 7 : 0)]);
-                if (edge_rook != null && !edge_rook.didMove()) {
+                if (edge_rook != null && !edge_rook.hasMoved()) {
                     if ((toX - xPosition > 0 && board[xPosition+1][yPosition] == null && board[xPosition+2][yPosition] == null) ||
                             (toX - xPosition < 0 && board[xPosition-1][yPosition] == null && board[xPosition-2][yPosition] == null)) {
                         if (!isInCheck()) {

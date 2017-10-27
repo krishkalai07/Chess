@@ -13,11 +13,11 @@ public class Rook extends Piece {
         didMove = false;
     }
 
-    public boolean didMove() {
+    public boolean hasMoved() {
         return didMove;
     }
 
-    public void setDidMove(boolean didMove) {
+    public void setHasMoved(boolean didMove) {
         this.didMove = didMove;
     }
 

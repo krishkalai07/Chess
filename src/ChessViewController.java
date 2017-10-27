@@ -6,15 +6,16 @@ import java.util.List;
 import java.util.Vector;
 
 public class ChessViewController extends JPanel implements MouseListener {
-    public final int BOARD_SIZE = 8;
+    public static final int BOARD_SIZE = 8;
 
-    JFrame superview;
-    LoggerViewController assistant;
+    private JFrame superview;
+    private LoggerViewController assistant;
 
     private Piece board[][];
     private Vector<BoardPoint> possibleMoves;
     private Vector<BoardPoint> whiteControl;
     private Vector<BoardPoint> blackControl;
+    private Vector<String> FENValues;
     private Piece currentlyViewing;
     private int moveNumber;
     private int halfmoveCounter;
@@ -29,12 +30,15 @@ public class ChessViewController extends JPanel implements MouseListener {
         this.possibleMoves = new Vector<>();
         this.whiteControl = new Vector<>();
         this.blackControl = new Vector<>();
+        this.FENValues = new Vector<>();
         this.currentlyViewing = null;
         this.turn = true;
         this.moveNumber = 1;
         this.halfmoveCounter = 0;
 
         initialize_board();
+        System.out.println(BoardCompression.getFullFEN(board, turn, halfmoveCounter, moveNumber));
+        FENValues.add(BoardCompression.compressBoard(board));
         //printBoard();
 
         setBackground(Color.BLACK);
@@ -172,9 +176,9 @@ public class ChessViewController extends JPanel implements MouseListener {
 
     public void attemptMovePiece(int destX, int destY) {
         if (currentlyViewing != null) {
-            if (currentlyViewing.validateMove(destX, destY) && simulateMove(currentlyViewing.getXPosition(), currentlyViewing.getYPosition(), destX, destY)) {
-                int srcX = currentlyViewing.getXPosition();
-                int srcY = currentlyViewing.getYPosition();
+            int srcX = currentlyViewing.getXPosition();
+            int srcY = currentlyViewing.getYPosition();
+            if (currentlyViewing.validateMove(destX, destY) && simulateMove(srcX, srcY, destX, destY)) {
                 boolean isCapture = board[destX][destY] != null;
 
                 // En passant
@@ -282,6 +286,9 @@ public class ChessViewController extends JPanel implements MouseListener {
                     return;
                 }
 
+//                System.out.println(BoardCompression.getFullFEN(board, turn, halfmoveCounter, moveNumber));
+                FENValues.add(BoardCompression.compressBoard(board));
+
                 // Has the game ended?
                 if (count == 0) {
                     if (king.isInCheck()) {
@@ -295,9 +302,23 @@ public class ChessViewController extends JPanel implements MouseListener {
                         //JOptionPane.showMessageDialog(superview, "Game is a draw", "Game over" , JOptionPane.PLAIN_MESSAGE);
                     }
                 }
+                if (numberOfRepeatedBoards(BoardCompression.compressBoard(board)) >= 3) {
+                    draw = true;
+                    repaint();
+                }
             }
         }
         possibleMoves.clear();
+    }
+
+    private int numberOfRepeatedBoards(String current) {
+        int count = 0;
+        for (String FENValue : FENValues) {
+            if (current.equals(FENValue)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     @Override

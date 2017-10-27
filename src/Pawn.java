@@ -17,7 +17,7 @@ public class Pawn extends Piece {
         this.didMoveTwoSpacesLastMove = didMoveTwoSpacesLastMove;
     }
 
-    public boolean isDidMoveTwoSpacesLastMove() {
+    public boolean didMoveTwoSpacesLastMove() {
         return didMoveTwoSpacesLastMove;
     }
 
