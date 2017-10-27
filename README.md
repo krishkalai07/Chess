@@ -35,7 +35,7 @@ King in check - Done
 
 Stalemate - Not started
 
-Checkmate - Not started
+Checkmate - Done
 
 #Extraneous goals
 Move hints - Done
@@ -47,4 +47,8 @@ Game log - Not started
 #Humor
 Anyone know the strange relief when you refactor 308 lines of code? No, that's just me. Ok then.
 
-Who likes boolean logic? Not me. Especially simple statements such as `turn && isPointInVector(...)`
+Who likes boolean logic? Not me. Especially simple statements such as `turn and isPointInVector(...)`
+
+"Wait... why am I able to move this... (the king will be in check) ... Oh. Why does this king say it didn't move \**sigh*\*"
+
+Ok, how does stalemate not work, but checkmate works perfectly fine?
