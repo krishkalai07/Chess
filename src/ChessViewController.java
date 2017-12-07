@@ -2,14 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.List;
 import java.util.Vector;
 
 public class ChessViewController extends JPanel implements MouseListener {
-    public static final int BOARD_SIZE = 8;
+    public static volatile transient int BOARD_SIZE = 8;
 
     private JFrame superview;
-    private LoggerViewController assistant;
+    //private LoggerViewController assistant;
 
     private Piece board[][];
     private Vector<BoardPoint> possibleMoves;
@@ -25,7 +26,7 @@ public class ChessViewController extends JPanel implements MouseListener {
 
     ChessViewController(JFrame superview, LoggerViewController assistant) {
         this.superview = superview;
-        this.assistant = assistant;
+        //this.assistant = assistant;
         this.board = new Piece[BOARD_SIZE][BOARD_SIZE];
         this.possibleMoves = new Vector<>();
         this.whiteControl = new Vector<>();
@@ -39,8 +40,8 @@ public class ChessViewController extends JPanel implements MouseListener {
         initialize_board();
         System.out.println(BoardCompression.getFullFEN(board, turn, halfmoveCounter, moveNumber));
         FENValues.add(BoardCompression.compressBoard(board));
-        //printBoard();
 
+        setSize(600, 600);
         setBackground(Color.BLACK);
         addMouseListener(this);
     }
@@ -99,11 +100,18 @@ public class ChessViewController extends JPanel implements MouseListener {
     }
 
     public boolean simulateMove (int srcX, int srcY, int destX, int destY) {
-        Piece tBoard[][] = deepCopyArray(board);
+        Piece[][] tBoard;
+        try {
+            tBoard = deepCopyArray(board);
+        } catch (CloneNotSupportedException x) {
+            System.err.println("Many questions to what happnned");
+            throw new InternalError();
+        }
+
         Vector<BoardPoint> tWhiteControl = new Vector<>();
         Vector<BoardPoint> tBlackControl = new Vector<>();
-        King whiteKing = null;
-        King blackKing = null;
+        King white_king = null;
+        King black_king = null;
 
         movePiece(tBoard, srcX, srcY, destX, destY);
 
@@ -114,10 +122,10 @@ public class ChessViewController extends JPanel implements MouseListener {
                     if (tBoard[i][j] != null) {
                         if (tBoard[i][j] instanceof King) {
                             if (tBoard[i][j].isWhite()) {
-                                whiteKing = (King)tBoard[i][j];
+                                white_king = (King)tBoard[i][j];
                             }
                             else {
-                                blackKing = (King)tBoard[i][j];
+                                black_king = (King)tBoard[i][j];
                             }
                         }
                     }
@@ -126,17 +134,17 @@ public class ChessViewController extends JPanel implements MouseListener {
         }
 
         // Just to clear the warnings of a possible NullPointerException.
-        if (whiteKing == null || blackKing == null) {
+        if (white_king == null || black_king == null) {
             return false;
         }
 
         if (turn) {
-            if (vectorContainsPoint(tBlackControl, whiteKing.getXPosition(), whiteKing.getYPosition())) {
+            if (vectorContainsPoint(tBlackControl, white_king.getFile(), white_king.getRank())) {
                 return false;
             }
         }
         else {
-            if (vectorContainsPoint(tWhiteControl, blackKing.getXPosition(), blackKing.getYPosition())) {
+            if (vectorContainsPoint(tWhiteControl, black_king.getFile(), black_king.getRank())) {
                 return false;
             }
         }
@@ -144,9 +152,9 @@ public class ChessViewController extends JPanel implements MouseListener {
         return true;
     }
 
-    private boolean vectorContainsPoint(List<BoardPoint> pointList, int x, int y) {
-        for (int i = 0; i < pointList.size(); i++) {
-            if (x == pointList.get(i).x && y == pointList.get(i).y) {
+    private boolean vectorContainsPoint(List<BoardPoint> point_list, int x, int y) {
+        for (BoardPoint point : point_list) {
+            if (x == point.x && y == point.y) {
                 return true;
             }
         }
@@ -156,16 +164,15 @@ public class ChessViewController extends JPanel implements MouseListener {
     public void movePiece(Piece[][] board, int srcX, int srcY, int destX, int destY) {
         Piece sourcePiece = board[srcX][srcY];
         board[destX][destY] = sourcePiece;
-        sourcePiece.setXPosition(destX);
-        sourcePiece.setYPosition(destY);
+        sourcePiece.setFile(destX);
+        sourcePiece.setRank(destY);
         board[srcX][srcY] = null;
     }
 
-    private Piece[][] deepCopyArray(Piece[][] board) {
+    private Piece[][] deepCopyArray(Piece[][] board) throws CloneNotSupportedException {
         Piece[][] tBoard = new Piece[8][8];
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board.length; j++) {
-                //tBoard[i][j] = board[i][j];
                 if (board[i][j] != null) {
                     tBoard[i][j] = board[i][j].clone();
                 }
@@ -176,12 +183,12 @@ public class ChessViewController extends JPanel implements MouseListener {
 
     public void attemptMovePiece(int destX, int destY) {
         if (currentlyViewing != null) {
-            int srcX = currentlyViewing.getXPosition();
-            int srcY = currentlyViewing.getYPosition();
+            int srcX = currentlyViewing.getFile();
+            int srcY = currentlyViewing.getRank();
             if (currentlyViewing.validateMove(destX, destY) && simulateMove(srcX, srcY, destX, destY)) {
-                boolean isCapture = board[destX][destY] != null;
+                //boolean isCapture = board[destX][destY] != null;
 
-                // En passant
+                /* En passant rule */
                 if (currentlyViewing instanceof Pawn) {
                     if (destX != srcX) {
                         Pawn pawn = (Pawn) (currentlyViewing);
@@ -191,21 +198,23 @@ public class ChessViewController extends JPanel implements MouseListener {
                     }
                 }
 
-                //halfmove counter for 50 move rule
+                /* halfmove counter for 50 move rule */
                 halfmoveCounter++;
+
                 if (board[destX][destY] != null) {
+                    // a piece is captured. Reset counter.
                     halfmoveCounter = 0;
                 }
 
                 movePiece(board, srcX, srcY, destX, destY);
 
-                //Move number
+                /* Move number */
                 if (!turn) {
                     moveNumber++;
                 }
                 turn = !turn;
 
-                //Castling
+                /* Update Castling Rights */
                 if (currentlyViewing instanceof King) {
                     int rank = currentlyViewing.isWhite() ? 7 : 0;
 
@@ -217,17 +226,19 @@ public class ChessViewController extends JPanel implements MouseListener {
                     }
                     ((King)(currentlyViewing)).setHasMoved(true);
                 }
-                // This pawn can be taken en passant.
                 else if (currentlyViewing instanceof Pawn) {
                     Pawn pawn = (Pawn)currentlyViewing;
+
+                    //Moved a pawn, reset halfmove counter.
                     halfmoveCounter = 0;
 
                     if (Math.abs(destY - srcY) == 2) {
+                        // This pawn can be taken en passant.
                         pawn.setMoveTwoSpacesLastMove(true);
                     }
                 }
 
-                // The time for en passant has expired for all pawns.
+                /* The time for en passant has expired for all pawns except tha active one. */
                 for (int i = 0; i < BOARD_SIZE; i++) {
                     for (int j = 0; j < BOARD_SIZE; j++) {
                         if (board[i][j] != null && board[i][j] instanceof Pawn && board[i][j] != currentlyViewing) {
@@ -265,8 +276,8 @@ public class ChessViewController extends JPanel implements MouseListener {
                                 possibleMoves.clear();
                                 board[i][j].getPossibleMoveList(possibleMoves);
 
-                                int t_from_x = board[i][j].getXPosition();
-                                int t_from_y = board[i][j].getYPosition();
+                                int t_from_x = board[i][j].getFile();
+                                int t_from_y = board[i][j].getRank();
 
                                 for (int k = 0; k < possibleMoves.size();) {
                                     if (!simulateMove(t_from_x, t_from_y, possibleMoves.get(k).x, possibleMoves.get(k).y)) {
@@ -286,7 +297,6 @@ public class ChessViewController extends JPanel implements MouseListener {
                     return;
                 }
 
-//                System.out.println(BoardCompression.getFullFEN(board, turn, halfmoveCounter, moveNumber));
                 FENValues.add(BoardCompression.compressBoard(board));
 
                 // Has the game ended?
@@ -294,12 +304,12 @@ public class ChessViewController extends JPanel implements MouseListener {
                     if (king.isInCheck()) {
                         gameEnded = true;
                         repaint();
-                        //JOptionPane.showMessageDialog(superview, turn ? "Black won the game" : "White won the game", "Game over" , JOptionPane.PLAIN_MESSAGE);
+                        JOptionPane.showMessageDialog(superview, turn ? "Black won the game" : "White won the game", "Game over" , JOptionPane.PLAIN_MESSAGE);
                     }
                     else {
                         draw = true;
                         repaint();
-                        //JOptionPane.showMessageDialog(superview, "Game is a draw", "Game over" , JOptionPane.PLAIN_MESSAGE);
+                        JOptionPane.showMessageDialog(superview, "Game is a draw", "Game over" , JOptionPane.PLAIN_MESSAGE);
                     }
                 }
                 if (numberOfRepeatedBoards(BoardCompression.compressBoard(board)) >= 3) {
@@ -349,14 +359,16 @@ public class ChessViewController extends JPanel implements MouseListener {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] != null) {
-                    board[i][j].draw(g);
+                    try {
+                        board[i][j].draw(g);
+                    } catch (IOException x) {
+                        System.err.println("IOException occurred. Cannot find file.");
+                        System.exit(1);
+                        return;
+                    }
                 }
             }
         }
-
-//        System.out.println();
-//        printBoard();
-//        System.out.println();
     }
 
     @Override
@@ -378,18 +390,22 @@ public class ChessViewController extends JPanel implements MouseListener {
 
         possibleMoves.clear();
         Piece clickedSpace = board[xTile][yTile];
+
         if (clickedSpace == null) {
+            //User clicked an empty space, move piece there.
             attemptMovePiece(xTile, yTile);
             repaint();
         }
         else {
             if (clickedSpace.isWhite() == turn) {
+                // User clicked on their own piece. Set it as the active piece.
                 currentlyViewing = clickedSpace;
+
+                //Get all legal moves
                 possibleMoves.clear();
                 currentlyViewing.getPossibleMoveList(possibleMoves);
-
                 for (int i = 0; i < possibleMoves.size();) {
-                    if (!simulateMove(currentlyViewing.getXPosition(), currentlyViewing.getYPosition(), possibleMoves.get(i).x, possibleMoves.get(i).y)) {
+                    if (!simulateMove(currentlyViewing.getFile(), currentlyViewing.getRank(), possibleMoves.get(i).x, possibleMoves.get(i).y)) {
                         possibleMoves.remove(i);
                         continue;
                     }
@@ -398,6 +414,7 @@ public class ChessViewController extends JPanel implements MouseListener {
                 repaint();
             }
             else {
+                //User clicked on an opponent's piece. Move there if legal.
                 attemptMovePiece(xTile, yTile);
                 repaint();
             }

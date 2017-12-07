@@ -1,5 +1,20 @@
+/**
+ * Class of static methods for compressing a board into a string.
+ *
+ */
 public class BoardCompression {
-    public static String getFullFEN(Piece[][] board, boolean turn, int halfmoveCounter, int moveNumber) {
+//    public static void decompress_board (Piece[][] board, String FEN, King white_king, King black_king, Piece[][] white_control, List<BoardPoint> black_control, boolean turn, Integer move_number, int halfmove_counter) {
+//        String[] split_FEN = FEN.split("[ ]");
+//
+//        for (int i = 0; i < 8; i++) {
+//            board.push_back(std::vector<Piece *>());
+//            for (int j = 0; j < 8; j++) {
+//                board[i].push_back(null);
+//            }
+//        }
+//    }
+
+    public static String getFullFEN(Piece[][] board, boolean turn, int halfmove_counter, int move_number) {
         String compression = "";
 
         compression += getPiecePlacement(board);
@@ -8,8 +23,8 @@ public class BoardCompression {
         compression += ' ';
         compression += getEnPassantRights(board);
 
-        compression += " " + halfmoveCounter;
-        compression += " " + moveNumber;
+        compression += " " + halfmove_counter;
+        compression += " " + move_number;
 
         return compression;
     }
@@ -89,14 +104,10 @@ public class BoardCompression {
 
         for (int i = 3; i <= 4; i++) {
             for (int j = 0; j < 7; j++) {
-                if (board[j][i] != null) {
-                    if (board[j][i] instanceof Pawn) {
-                        if(((Pawn)board[j][i]).didMoveTwoSpacesLastMove()) {
-                            int direction = board[j][i].isWhite() ? 1 : -1;
-                            enPassantDestination.append(indexToAlgebraic(j, i + direction));
-                            return enPassantDestination.toString();
-                        }
-                    }
+                if (board[j][i] != null && board[j][i] instanceof Pawn && ((Pawn)board[j][i]).didMoveTwoSpacesLastMove()) {
+                    int direction = board[j][i].isWhite() ? 1 : -1;
+                    enPassantDestination.append(indexToAlgebraic(j, i + direction));
+                    return enPassantDestination.toString();
                 }
             }
         }
@@ -110,6 +121,8 @@ public class BoardCompression {
 
     private static String indexToAlgebraic(int x, int y) {
         String algebraic = "";
+
+//        Object
 
         algebraic += (char)('a' + x);
         algebraic += (8 - y);

@@ -8,9 +8,7 @@ If you want to run, then compile and run `Main.java`.
 Board and pieces drawn - Done
 
 Pawn movement - In Progress
-
 - En passant - Not started
-
 - Pawn promotion - Not started
     
 Knight movement - Done
@@ -22,11 +20,8 @@ Rook movement - Done
 Queen movement - Done
 
 King movement - In progress
-
 - King moves anywhere - Done
-
 - Castling - Done
-
 - King should not move in an enemy controlled square - Done 
 
 Player turns - Done

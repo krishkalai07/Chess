@@ -5,92 +5,88 @@ import java.io.IOException;
 import java.util.List;
 
 public class Rook extends Piece {
-    private boolean didMove; // Used for castling.
+    /**
+     * Used for individual side castling rights.
+     */
+    private boolean did_move;
 
-    public Rook(int xPosition, int yPosition, boolean isWhite, Piece[][] board) {
-        super(xPosition, yPosition, isWhite, board);
-        didMove = false;
+    public Rook(int file, int rank, boolean is_white, Piece[][] board) {
+        super(file, rank, is_white, board);
+        did_move = false;
     }
 
     public boolean hasMoved() {
-        return didMove;
+        return did_move;
     }
 
-    public void setHasMoved(boolean didMove) {
-        this.didMove = didMove;
+    public void setHasMoved(boolean did_move) {
+        this.did_move = did_move;
     }
 
     @Override
-    public void draw(Graphics g) {
-        BufferedImage img = null;
-        try {
-            if (super.color) {
-//                String filename = "vc_assets/WhiteRook.png";
-//                img = ImageIO.read(new File(filename));
-                String filename = "/WhiteRook.png";
-                img = ImageIO.read(getClass().getResource(filename));
-            }
-            else {
-//                String filename = "vc_assets/BlackRook.png";
-//                img = ImageIO.read(new File(filename));
-                String filename = "/BlackRook.png";
-                img = ImageIO.read(getClass().getResource(filename));
-            }
-        } catch (IOException e) {
-            System.err.println("File cannot be read");
+    public void draw(Graphics g) throws IOException {
+        BufferedImage img;
+        if (super.color) {
+            String filename = "/WhiteRook.png";
+            img = ImageIO.read(getClass().getResource(filename));
         }
-        g.drawImage(img,50*(getXPosition()+1), 50*(getYPosition()+1), 50, 50, null);
+        else {
+            String filename = "/BlackRook.png";
+            img = ImageIO.read(getClass().getResource(filename));
+        }
+
+        g.drawImage(img,50*(getFile()+1), 50*(getRank()+1), 50, 50, null);
     }
 
     @Override
-    public void getPossibleMoveList(List<BoardPoint> pointList) {
+    public void getPossibleMoveList(List<BoardPoint> point_list) {
         // Up
-        for (int i = 1; yPosition - i >= 0; i++) {
-            if (board[xPosition][yPosition-i] == null) {
-                pointList.add(new BoardPoint(xPosition, yPosition - i));
+        for (int i = 1; rank - i >= 0; i++) {
+            if (board[file][rank -i] == null) {
+                point_list.add(new BoardPoint(file, rank - i));
             }
             else {
-                if (board[xPosition][yPosition - i].color != this.color) {
-                    pointList.add(new BoardPoint(xPosition, yPosition - i));
+                if (board[file][rank - i].color != this.color) {
+                    point_list.add(new BoardPoint(file, rank - i));
                 }
                 break;
             }
         }
 
         // Right
-        for (int i = 1; xPosition + i < 8; i++) {
-            if (board[xPosition+i][yPosition] == null) {
-                pointList.add(new BoardPoint(xPosition+i, yPosition));
+        for (int i = 1; file + i < 8; i++) {
+            if (board[file +i][rank] == null) {
+                point_list.add(new BoardPoint(file +i, rank));
             }
             else {
-                if (board[xPosition+i][yPosition].color != this.color) {
-                    pointList.add(new BoardPoint(xPosition + i, yPosition));
+                if (board[file +i][rank].color != this.color) {
+                    point_list.add(new BoardPoint(file + i, rank));
                 }
                 break;
             }
         }
 
         // Down
-        for (int i = 1; yPosition + i < 8; i++) {
-            if (board[xPosition][yPosition+i] == null) {
-                pointList.add(new BoardPoint(xPosition, yPosition + i));
+        for (int i = 1; rank + i < 8; i++) {
+            if (board[file][rank +i] == null) {
+                point_list.add(new BoardPoint(file, rank + i));
             }
             else {
-                if (board[xPosition][yPosition + i].color != this.color) {
-                    pointList.add(new BoardPoint(xPosition, yPosition + i));
+                if (board[file][rank + i].color != this.color) {
+                    point_list.add(new BoardPoint(file, rank + i));
                 }
                 break;
             }
         }
 
         //Left
-        for (int i = 1; xPosition - i >= 0; i++) {
-            if (board[xPosition - i][yPosition] == null) {
-                pointList.add(new BoardPoint(xPosition - i, yPosition));
+        for (int i = 1; file - i >= 0; i++) {
+            if (board[file - i][rank] == null) {
+                point_list.add(new BoardPoint(file - i, rank));
             }
             else {
-                if (board[xPosition - i][yPosition].color != this.color) {
-                    pointList.add(new BoardPoint(xPosition - i, yPosition));
+                if (board[file - i][rank].color != this.color) {
+                    point_list.add(new BoardPoint(file - i, rank));
                 }
                 break;
             }
@@ -98,12 +94,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    public void getControlledSquares(List<BoardPoint> point_list) {
-        getControlledSquares(point_list, board);
-    }
-
-    @Override
-    public void getControlledSquares(List<BoardPoint> pointList, Piece[][] board) {
+    public void getControlledSquares(List<BoardPoint> point_list, Piece[][] board) {
         boolean stop_upward = false;
         boolean stop_rightward = false;
         boolean stop_downward = false;
@@ -111,72 +102,72 @@ public class Rook extends Piece {
 
         for (int i = 1; !stop_upward || !stop_downward || !stop_leftward || !stop_rightward; i++) {
             //upward
-            if (yPosition - i < 0) {
+            if (rank - i < 0) {
                 stop_upward = true;
             }
             if (!stop_upward) {
-                if (board[xPosition][yPosition - i] != null) {
+                if (board[file][rank - i] != null) {
                     stop_upward = true;
                 }
-                pointList.add(new BoardPoint(xPosition, yPosition - i));
+                point_list.add(new BoardPoint(file, rank - i));
             }
 
             //downward
-            if (yPosition + i > 7) {
+            if (rank + i > 7) {
                 stop_downward = true;
             }
             if (!stop_downward) {
-                if (board[xPosition][yPosition + i] != null) {
+                if (board[file][rank + i] != null) {
                     stop_downward = true;
                 }
-                pointList.add(new BoardPoint(xPosition, yPosition + i));
+                point_list.add(new BoardPoint(file, rank + i));
             }
 
             //rightward
-            if (xPosition + i > 7) {
+            if (file + i > 7) {
                 stop_rightward = true;
             }
             if (!stop_rightward) {
-                if (board[xPosition + i][yPosition] != null) {
+                if (board[file + i][rank] != null) {
                     stop_rightward = true;
                 }
-                pointList.add(new BoardPoint(xPosition + i, yPosition));
+                point_list.add(new BoardPoint(file + i, rank));
             }
 
             //leftward
-            if (xPosition - i < 0) {
+            if (file - i < 0) {
                 stop_leftward = true;
             }
             if (!stop_leftward) {
-                if (board[xPosition - i][yPosition] != null) {
+                if (board[file - i][rank] != null) {
                     stop_leftward = true;
                 }
-                pointList.add(new BoardPoint(xPosition - i, yPosition));
+                point_list.add(new BoardPoint(file - i, rank));
             }
         }
     }
 
     @Override
-    public boolean validateMove(int toX, int toY) {
+    public boolean validateMove(int dest_file, int dest_rank) {
         int delta_x;
         int delta_y;
-        int condition = Math.abs(xPosition - toY) > Math.abs(yPosition - toY) ? Math.abs(xPosition - toY) : Math.abs(yPosition - toY);
+        int condition = Math.abs(file - dest_rank) > Math.abs(rank - dest_rank) ? Math.abs(file - dest_rank) : Math.abs(rank - dest_rank);
 
-        if (xPosition == toX && yPosition == toY) {
+        if (file == dest_file && rank == dest_rank) {
             return false;
         }
 
-        if ((Math.abs(xPosition - toX) != 0 && Math.abs(yPosition - toY) == 0) ||
-                (Math.abs(xPosition - toX) == 0 && Math.abs(yPosition - toY) != 0)) {
+        if ((Math.abs(file - dest_file) != 0 && Math.abs(rank - dest_rank) == 0) ||
+                (Math.abs(file - dest_file) == 0 && Math.abs(rank - dest_rank) != 0)) {
             for (int i = 1; i < condition; i++) {
-                delta_x = (xPosition - toX < 0 ? xPosition + i : (xPosition - toX > 0 ? xPosition - i : xPosition));
-                delta_y = (yPosition - toY < 0 ? yPosition + i : (yPosition - toY > 0 ? yPosition - i : yPosition));
+                delta_x = (file - dest_file < 0 ? file + i : (file - dest_file > 0 ? file - i : file));
+                delta_y = (rank - dest_rank < 0 ? rank + i : (rank - dest_rank > 0 ? rank - i : rank));
 
                 if (board[delta_x][delta_y] != null) {
                     return false;
                 }
             }
-            return ((board[toX][toY] == null) || (board[toX][toY].color != color));
+            return ((board[dest_file][dest_rank] == null) || (board[dest_file][dest_rank].color != color));
         }
 
         return false;
@@ -188,7 +179,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    public Rook clone() {
+    public Rook clone() throws CloneNotSupportedException {
         return (Rook)super.clone();
     }
 }

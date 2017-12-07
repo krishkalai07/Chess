@@ -8,6 +8,7 @@ public class LoggerViewController extends JPanel {
     LoggerViewController() {
         moves = new Vector<>();
 
+        setSize(200, 700);
         setBackground(Color.WHITE);
     }
 

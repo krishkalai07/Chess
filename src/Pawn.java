@@ -1,63 +1,94 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.List;
 
 public class Pawn extends Piece {
-    private boolean didMoveTwoSpacesLastMove;
+    /**
+     * Boolean for if a pawn can be captured en-passant.
+     */
+    private boolean did_move_two_spaces_last_move;
 
-    public Pawn(int xPosition, int yPosition, boolean isWhite, Piece[][] board) {
-        this(xPosition, yPosition, isWhite, board, false);
+    /**
+     * Constructor that defaults the pawn moving 2 spaces to false.
+     *
+     * @param file     The file the Pawn is placed on the board.
+     * @param rank     The rank the Pawn is placed on the board.
+     * @param is_white True if the Pawn is white, false otherwise.
+     * @param board    Board reference.
+     */
+    public Pawn(int file, int rank, boolean is_white, Piece[][] board) {
+        this(file, rank, is_white, board, false);
     }
 
-    public Pawn(int xPosition, int yPosition, boolean isWhite, Piece[][] board, boolean didMoveTwoSpacesLastMove) {
+    public Pawn(int xPosition, int yPosition, boolean isWhite, Piece[][] board, boolean did_move_two_spaces_last_move) {
         super(xPosition, yPosition, isWhite, board);
-        this.didMoveTwoSpacesLastMove = didMoveTwoSpacesLastMove;
+        this.did_move_two_spaces_last_move = did_move_two_spaces_last_move;
     }
 
+    /**
+     * Gets the value of the field [did_move_two_spaces_last_move].
+     *
+     * @return The value of the field [did_move_two_spaces_last_move].
+     */
     public boolean didMoveTwoSpacesLastMove() {
-        return didMoveTwoSpacesLastMove;
+        return did_move_two_spaces_last_move;
     }
 
-    public void setMoveTwoSpacesLastMove(boolean didMoveTwoSpacesLastMove) {
-        this.didMoveTwoSpacesLastMove = didMoveTwoSpacesLastMove;
+    /**
+     * Method to set the [did_move_two_spaces_last_move]'s field's value.
+     *
+     * @param did_move_two_spaces_last_move Boolean if the Pawn can be captured en-passant.
+     */
+    public void setMoveTwoSpacesLastMove(boolean did_move_two_spaces_last_move) {
+        this.did_move_two_spaces_last_move = did_move_two_spaces_last_move;
     }
 
-    private void getForwardMoves(List<BoardPoint> pointList) {
+    /**
+     * Utility method that appends the forward moves of the Pawn.
+     * This method adds 2 [BoardPoint]s if the Pawn is on the 2nd rank.
+     *
+     * @param point_list Reference to List of [BoardPoint]s to append to.
+     */
+    private void getForwardMoves(List<BoardPoint> point_list) {
         int movement_direction = color ? -1 : 1;
 
-        if (yPosition == (isWhite() ? 6 : 1)) {
-            if (board[xPosition][yPosition + (2 * movement_direction)] == null) {
-                pointList.add(new BoardPoint(xPosition, yPosition + (2*movement_direction)));
+        if (rank == (isWhite() ? 6 : 1)) {
+            if (board[file][rank + (2 * movement_direction)] == null) {
+                point_list.add(new BoardPoint(file, rank + (2*movement_direction)));
             }
         }
 
-        if (board[xPosition][yPosition + movement_direction] == null) {
-            pointList.add(new BoardPoint(xPosition, yPosition + movement_direction));
+        if (board[file][rank + movement_direction] == null) {
+            point_list.add(new BoardPoint(file, rank + movement_direction));
         }
     }
 
-    private void getCaptureMoves(List<BoardPoint> pointList) {
+    /**
+     * Utility method that appends the capture moves of the Pawn, including capture with en-passant.
+     *
+     * @param point_list Reference to List of [BoardPoint]s to append to.
+     */
+    private void getCaptureMoves(List<BoardPoint> point_list) {
         int movement_direction = color ? -1 : 1;
 
         // Left
-        if (xPosition != 0) {
+        if (file != 0) {
             // Diagonal
-            if (board[xPosition - 1][yPosition + movement_direction] != null) {
-                if (board[xPosition - 1][yPosition + movement_direction].color != color) {
-                    pointList.add(new BoardPoint(xPosition - 1, yPosition + movement_direction));
+            if (board[file - 1][rank + movement_direction] != null) {
+                if (board[file - 1][rank + movement_direction].color != color) {
+                    point_list.add(new BoardPoint(file - 1, rank + movement_direction));
                 }
             }
 
             // En-passant
-            if (yPosition == (color ? 3 : 4)) {
-                if (board[xPosition - 1][yPosition] != null) {
-                    if (board[xPosition - 1][yPosition] instanceof Pawn) {
-                        Pawn castedPiece = (Pawn) (board[xPosition - 1][yPosition]);
+            if (rank == (color ? 3 : 4)) {
+                if (board[file - 1][rank] != null) {
+                    if (board[file - 1][rank] instanceof Pawn) {
+                        Pawn castedPiece = (Pawn) (board[file - 1][rank]);
                         if (castedPiece != null) {
-                            if (castedPiece.didMoveTwoSpacesLastMove) {
-                                pointList.add(new BoardPoint(xPosition - 1, yPosition + movement_direction));
+                            if (castedPiece.did_move_two_spaces_last_move) {
+                                point_list.add(new BoardPoint(file - 1, rank + movement_direction));
                             }
                         }
                     }
@@ -66,21 +97,21 @@ public class Pawn extends Piece {
         }
 
         // Right
-        if (xPosition != 7) {
+        if (file != 7) {
             // Diagonal
-            if (board[xPosition + 1][yPosition + movement_direction] != null) {
-                if (board[xPosition + 1][yPosition + movement_direction].color != color) {
-                    pointList.add(new BoardPoint(xPosition + 1, yPosition + movement_direction));
+            if (board[file + 1][rank + movement_direction] != null) {
+                if (board[file + 1][rank + movement_direction].color != color) {
+                    point_list.add(new BoardPoint(file + 1, rank + movement_direction));
                 }
             }
 
-            if (yPosition == (color ? 3 : 4)) {
-                if (board[xPosition + 1][yPosition] != null) {
-                    if (board[xPosition + 1][yPosition] instanceof Pawn) {
-                        if (board[xPosition + 1][yPosition] != null) {
-                            Pawn castedPiece = (Pawn) (board[xPosition + 1][yPosition]);
-                            if (castedPiece.didMoveTwoSpacesLastMove) {
-                                pointList.add(new BoardPoint(xPosition + 1, yPosition + movement_direction));
+            if (rank == (color ? 3 : 4)) {
+                if (board[file + 1][rank] != null) {
+                    if (board[file + 1][rank] instanceof Pawn) {
+                        if (board[file + 1][rank] != null) {
+                            Pawn castedPiece = (Pawn) (board[file + 1][rank]);
+                            if (castedPiece.did_move_two_spaces_last_move) {
+                                point_list.add(new BoardPoint(file + 1, rank + movement_direction));
                             }
                         }
                     }
@@ -90,25 +121,17 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void draw(Graphics g) {
-        BufferedImage img = null;
-        try {
-            if (isWhite()) {
-//                String filename = "vc_assets/WhitePawn.png";
-//                img = ImageIO.read(new File(filename));
-                String filename = "/WhitePawn.png";
-                img = ImageIO.read(getClass().getResource(filename));
-            }
-            else {
-//                String filename = "vc_assets/BlackPawn.png";
-//                img = ImageIO.read(new File(filename));
-                String filename = "/BlackPawn.png";
-                img = ImageIO.read(getClass().getResource(filename));
-            }
-        } catch (IOException e) {
-            System.err.println("File cannot be read: Pawn");
+    public void draw(Graphics g) throws java.io.IOException {
+        BufferedImage img;
+        if (color) {
+            String filename = "/WhitePawn.png";
+            img = ImageIO.read(getClass().getResource(filename));
         }
-        g.drawImage(img,50*(getXPosition()+1), 50*(getYPosition()+1), 50, 50, null);
+        else {
+            String filename = "/BlackPawn.png";
+            img = ImageIO.read(getClass().getResource(filename));
+        }
+        g.drawImage(img,50*(getFile()+1), 50*(getRank()+1), 50, 50, null);
     }
 
     @Override
@@ -118,20 +141,15 @@ public class Pawn extends Piece {
     }
 
     @Override
-    public void getControlledSquares(List<BoardPoint> pointList) {
-        getControlledSquares(pointList, board);
-    }
-
-    @Override
     public void getControlledSquares(List<BoardPoint> pointList, Piece[][] board) {
         int movement_direction = color ? -1 : 1;
 
-        if (xPosition != 0) {
-            pointList.add(new BoardPoint(xPosition - 1, yPosition + movement_direction));
+        if (file != 0) {
+            pointList.add(new BoardPoint(file - 1, rank + movement_direction));
         }
 
-        if (xPosition != 7) {
-            pointList.add(new BoardPoint(xPosition + 1, yPosition + movement_direction));
+        if (file != 7) {
+            pointList.add(new BoardPoint(file + 1, rank + movement_direction));
         }
     }
 
@@ -139,21 +157,21 @@ public class Pawn extends Piece {
     public boolean validateMove(int x, int y) {
         int direction = color ? -1 : 1;
 
-        if (xPosition == x && yPosition == y) {
+        if (file == x && rank == y) {
             return false;
         }
 
         //Move two spaces
-        if (Math.abs(yPosition - y) == 2 && xPosition == x) {
-            if (yPosition == (color ? 6 : 1)) {
-                if (board[xPosition][yPosition + direction] == null && board[xPosition][yPosition + (2 * direction)] == null) {
+        if (Math.abs(rank - y) == 2 && file == x) {
+            if (rank == (color ? 6 : 1)) {
+                if (board[file][rank + direction] == null && board[file][rank + (2 * direction)] == null) {
                     return true;
                 }
             }
         }
-        else if (y - yPosition == direction) {
+        else if (y - rank == direction) {
             //Move forward
-            if (xPosition == x) {
+            if (file == x) {
                 if (board[x][y] == null) {
                     return true;
                 }
@@ -169,7 +187,7 @@ public class Pawn extends Piece {
                     // En passant
                     Pawn castedPawn = (Pawn)board[x][y-direction];
                     if (castedPawn != null) {
-                        if (castedPawn.didMoveTwoSpacesLastMove) {
+                        if (castedPawn.did_move_two_spaces_last_move) {
                             return true;
                         }
                     }
@@ -186,7 +204,7 @@ public class Pawn extends Piece {
 
 
     @Override
-    public Pawn clone() {
+    public Pawn clone() throws CloneNotSupportedException {
         return (Pawn)super.clone();
     }
 }
